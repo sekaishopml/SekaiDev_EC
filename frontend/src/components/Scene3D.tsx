@@ -1,46 +1,59 @@
 "use client";
 
+import { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useGLTF, Center, Environment } from "@react-three/drei";
 import * as THREE from "three";
 
-function Shape() {
-  const mesh = useRef<THREE.Mesh>(null!);
-  useFrame((state) => {
-    mesh.current.rotation.x = state.clock.elapsedTime * 0.15;
-    mesh.current.rotation.y = state.clock.elapsedTime * 0.25;
+function Model() {
+  const { scene } = useGLTF("/models/sakura_bonsai.glb", true);
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((_, delta) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.15;
+    }
   });
 
   return (
-    <mesh ref={mesh} scale={1.4}>
-      <torusKnotGeometry args={[1, 0.35, 128, 32]} />
-      <meshStandardMaterial
-        color="#5c1a33"
-        roughness={0.25}
-        metalness={0.6}
-        emissive="#2a0a18"
-        emissiveIntensity={0.2}
-      />
-    </mesh>
-  );
-}
-
-function Lights() {
-  return (
-    <>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 5, 5]} intensity={1.2} />
-      <directionalLight position={[-5, -5, -5]} intensity={0.4} color="#a64d79" />
-    </>
+    <group ref={groupRef}>
+      <Center>
+        <primitive object={scene} scale={1.2} />
+      </Center>
+    </group>
   );
 }
 
 export default function Scene3D() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-[10px] tracking-widest text-muted uppercase">
+        loading bonsai…
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-full min-h-[50vh] md:min-h-[70vh]">
-      <Canvas camera={{ position: [0, 0, 4.5], fov: 45 }} dpr={[1, 2]}>
-        <Lights />
-        <Shape />
+    <div className="relative w-full h-full">
+      <Canvas
+        camera={{ position: [0, 2, 6], fov: 35, near: 0.1, far: 100 }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      >
+        <color attach="background" args={["transparent"]} />
+        <ambientLight intensity={0.7} />
+        <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
+        <pointLight position={[-5, 5, -5]} intensity={0.6} />
+        <Environment preset="studio" />
+        <Suspense fallback={null}>
+          <Model />
+        </Suspense>
       </Canvas>
     </div>
   );

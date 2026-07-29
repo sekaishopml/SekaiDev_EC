@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import NoiseOverlay from "@/components/NoiseOverlay";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
   title: "SekaiDev | Software Development Studio",
@@ -14,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <div className="noise" aria-hidden="true" />
-        {children}
+        <NoiseOverlay />
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );
