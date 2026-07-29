@@ -5,9 +5,9 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Center, Environment } from "@react-three/drei";
 import * as THREE from "three";
 
-function Model() {
-  const { scene } = useGLTF("/models/sakura_bonsai.glb", true);
+function Bonsai() {
   const groupRef = useRef<THREE.Group>(null);
+  const { scene } = useGLTF("/models/sakura_bonsai.glb", "/draco/");
 
   useFrame((_, delta) => {
     if (groupRef.current) {
@@ -18,9 +18,17 @@ function Model() {
   return (
     <group ref={groupRef}>
       <Center>
-        <primitive object={scene} scale={1.2} />
+        <primitive object={scene} scale={3} />
       </Center>
     </group>
+  );
+}
+
+function ModelLoader() {
+  return (
+    <Suspense fallback={null}>
+      <Bonsai />
+    </Suspense>
   );
 }
 
@@ -42,7 +50,7 @@ export default function Scene3D() {
   return (
     <div className="relative w-full h-full">
       <Canvas
-        camera={{ position: [0, 2, 6], fov: 35, near: 0.1, far: 100 }}
+        camera={{ position: [0, 1.5, 4.5], fov: 35, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       >
@@ -51,9 +59,7 @@ export default function Scene3D() {
         <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
         <pointLight position={[-5, 5, -5]} intensity={0.6} />
         <Environment preset="studio" />
-        <Suspense fallback={null}>
-          <Model />
-        </Suspense>
+        <ModelLoader />
       </Canvas>
     </div>
   );
