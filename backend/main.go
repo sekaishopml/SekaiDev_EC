@@ -76,10 +76,22 @@ func ensureSchema() error {
 
 func handleContact(w http.ResponseWriter, r *http.Request) {
 	var req ContactRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid request", http.StatusBadRequest)
-		return
+	ct := r.Header.Get("Content-Type")
+	if ct == "" || ct == "application/json" || len(ct) > 16 && ct[:16] == "application/json" {
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "invalid request", http.StatusBadRequest)
+			return
+		}
+	} else {
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "invalid request", http.StatusBadRequest)
+			return
+		}
+		req.Name = r.FormValue("name")
+		req.Email = r.FormValue("email")
+		req.Message = r.FormValue("message")
 	}
+
 	if req.Name == "" || req.Email == "" || req.Message == "" {
 		http.Error(w, "missing fields", http.StatusBadRequest)
 		return
@@ -92,6 +104,11 @@ func handleContact(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("contact insert error: %v", err)
 		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	if ct != "" && (len(ct) < 16 || ct[:16] != "application/json") && (r.Header.Get("Accept") == "" || len(r.Header.Get("Accept")) >= 9 && r.Header.Get("Accept")[:9] == "text/html") {
+		http.Redirect(w, r, "/?success=1", http.StatusSeeOther)
 		return
 	}
 

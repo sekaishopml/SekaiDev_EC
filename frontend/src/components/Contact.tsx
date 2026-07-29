@@ -1,31 +1,4 @@
-"use client";
-
-import { useState } from "react";
-
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [status, setStatus] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("Sending...");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setStatus("Message sent.");
-        setForm({ name: "", email: "", message: "" });
-      } else {
-        setStatus("Failed.");
-      }
-    } catch {
-      setStatus("Failed.");
-    }
-  };
-
   return (
     <section id="contact" className="min-h-screen px-6 md:px-12 py-24 flex flex-col justify-center">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
@@ -40,30 +13,28 @@ export default function Contact() {
         </div>
 
         <form
-          onSubmit={handleSubmit}
+          action="/api/contact"
+          method="POST"
           className="flex flex-col gap-6"
         >
           <label className="text-xs tracking-widest text-muted">NAME</label>
           <input
             type="text"
+            name="name"
             required
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="bg-transparent border-b border-foreground/30 py-3 focus:outline-none focus:border-accent transition-colors"
           />
           <label className="text-xs tracking-widest text-muted mt-2">EMAIL</label>
           <input
             type="email"
+            name="email"
             required
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
             className="bg-transparent border-b border-foreground/30 py-3 focus:outline-none focus:border-accent transition-colors"
           />
           <label className="text-xs tracking-widest text-muted mt-2">MESSAGE</label>
           <textarea
+            name="message"
             required
-            value={form.message}
-            onChange={(e) => setForm({ ...form, message: e.target.value })}
             rows={4}
             className="bg-transparent border-b border-foreground/30 py-3 focus:outline-none focus:border-accent transition-colors resize-none"
           />
@@ -73,7 +44,6 @@ export default function Contact() {
           >
             SEND INQUIRY
           </button>
-          {status && <p className="text-sm text-muted mt-4">{status}</p>}
         </form>
       </div>
     </section>
