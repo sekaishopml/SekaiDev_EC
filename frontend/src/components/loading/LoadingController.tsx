@@ -9,8 +9,9 @@ interface LoadingControllerProps {
 /**
  * Animates the server-rendered #sekaidev-loader splash screen once `loaded`
  * becomes true:
- * 1. Fade the black "SEKAIDEV" text, subtitle and spinner to reveal the
- *    bonsai through the SVG mask (the flowers cover the letter-shaped holes).
+ * 1. Fade the black "SEKAIDEV" text to reveal the bonsai through the SVG mask
+ *    (the flowers cover the letter-shaped holes). Subtitle and blossom spinner
+ *    stay visible during the hold pause.
  * 2. Pause to hold that knockout view.
  * 3. Fade the entire loader out and present the web.
  */
@@ -21,12 +22,11 @@ export default function LoadingController({ loaded }: LoadingControllerProps) {
       document.getElementById("sekaidev-loader-text"),
       document.getElementById("sekaidev-loader-text-desktop"),
     ];
-    const subtitle = document.getElementById("sekaidev-loader-subtitle");
-    const spinner = document.getElementById("sekaidev-loader-spinner");
 
     if (!loader || !loaded) return;
-    // Step 1: fade the solid elements to expose the masked, letter-shaped holes.
-    [...texts, subtitle, spinner].forEach((el) => {
+    // Step 1: fade only the solid SEKAIDEV text to expose the knockout.
+    // The subtitle and blossom spinner stay visible during the hold pause.
+    texts.forEach((el) => {
       if (el) el.classList.add("opacity-0");
     });
 
