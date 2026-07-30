@@ -49,12 +49,18 @@ export default function LoadingScreen() {
         >
           SEKAIDEV
         </span>
-        <span className="text-[10px] tracking-[0.3em] uppercase text-black/60">
+        <span
+          id="sekaidev-loader-subtitle"
+          className="text-[10px] tracking-[0.3em] uppercase text-black/60 transition-opacity duration-700 ease-out"
+        >
           Loading experience
         </span>
       </div>
 
-      <div className="absolute bottom-8 right-8 md:bottom-12 md:right-12 z-20 flex flex-col items-center gap-3">
+      <div
+        id="sekaidev-loader-spinner"
+        className="absolute bottom-8 right-8 md:bottom-12 md:right-12 z-20 flex flex-col items-center gap-3 transition-opacity duration-700 ease-out"
+      >
         <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border-[3px] border-rose-200 border-t-rose-500 animate-spin" />
         <span className="text-[9px] tracking-[0.25em] uppercase text-rose-400/80">
           blossom
