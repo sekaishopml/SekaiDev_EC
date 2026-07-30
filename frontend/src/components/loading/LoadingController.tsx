@@ -17,19 +17,21 @@ interface LoadingControllerProps {
 export default function LoadingController({ loaded }: LoadingControllerProps) {
   useEffect(() => {
     const loader = document.getElementById("sekaidev-loader");
-    const text = document.getElementById("sekaidev-loader-text");
+    const texts = [
+      document.getElementById("sekaidev-loader-text"),
+      document.getElementById("sekaidev-loader-text-desktop"),
+    ];
     const subtitle = document.getElementById("sekaidev-loader-subtitle");
     const spinner = document.getElementById("sekaidev-loader-spinner");
 
     if (!loader || !loaded) return;
-
     // Step 1: fade the solid elements to expose the masked, letter-shaped holes.
-    [text, subtitle, spinner].forEach((el) => {
+    [...texts, subtitle, spinner].forEach((el) => {
       if (el) el.classList.add("opacity-0");
     });
 
     // Step 2: hold the knockout view, then fade the whole loader overlay.
-    const holdMs = 3000;
+    const holdMs = 4000;
     const t = setTimeout(() => {
       loader.classList.add("opacity-0", "pointer-events-none");
       setTimeout(() => loader.remove(), 1000);
