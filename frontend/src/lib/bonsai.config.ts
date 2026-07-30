@@ -14,8 +14,8 @@ export const BONSAI_CONFIG = {
 
   // Main model transform
   bonsai: {
-    // Keep the centered top-down position from before
-    position: [0, -0.6, 0] as [number, number, number],
+    // Keep the centered top-down position, shifted up in the frame
+    position: [0, -0.6, -0.8] as [number, number, number],
 
     // Starting rotation in radians (x, y, z)
     // Y rotation so the flowers face the camera
