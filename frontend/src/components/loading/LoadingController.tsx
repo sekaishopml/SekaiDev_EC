@@ -29,10 +29,10 @@ export default function LoadingController({ loaded }: LoadingControllerProps) {
     });
 
     // Step 2: hold the knockout view, then fade the whole loader overlay.
-    const holdMs = 1500;
+    const holdMs = 3000;
     const t = setTimeout(() => {
       loader.classList.add("opacity-0", "pointer-events-none");
-      setTimeout(() => loader.remove(), 800);
+      setTimeout(() => loader.remove(), 1000);
     }, holdMs);
 
     return () => clearTimeout(t);
