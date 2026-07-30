@@ -9,8 +9,11 @@ export default function CameraController() {
   const { camera } = useThree();
 
   useEffect(() => {
-    const { position, target } = BONSAI_CONFIG.camera;
+    const { position, target, up } = BONSAI_CONFIG.camera;
     camera.position.set(...position);
+    if (up) {
+      camera.up.set(...up);
+    }
     if (target) {
       camera.lookAt(new THREE.Vector3(...target));
     }
