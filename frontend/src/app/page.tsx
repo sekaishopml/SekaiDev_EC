@@ -12,13 +12,18 @@ import LoadingScreen from "@/components/LoadingScreen";
 export default function Home() {
   const [bonsaiLoaded, setBonsaiLoaded] = useState(false);
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  const [maxTimeElapsed, setMaxTimeElapsed] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setMinTimeElapsed(true), 1800);
-    return () => clearTimeout(timer);
+    const minTimer = setTimeout(() => setMinTimeElapsed(true), 1800);
+    const maxTimer = setTimeout(() => setMaxTimeElapsed(true), 10000);
+    return () => {
+      clearTimeout(minTimer);
+      clearTimeout(maxTimer);
+    };
   }, []);
 
-  const loaded = bonsaiLoaded && minTimeElapsed;
+  const loaded = (bonsaiLoaded && minTimeElapsed) || maxTimeElapsed;
 
   return (
     <>
