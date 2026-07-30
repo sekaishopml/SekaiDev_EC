@@ -16,10 +16,24 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <div
+          id="sekaidev-loader"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-white transition-opacity duration-700 ease-out"
+        >
+          <div className="flex flex-col items-center gap-4">
+            <span
+              className="text-7xl md:text-9xl font-black uppercase tracking-tighter text-black animate-pulse-scale"
+              style={{ fontFamily: "var(--font-oswald)" }}
+            >
+              SEKAIDEV
+            </span>
+            <span className="text-[10px] tracking-[0.3em] uppercase text-black/60">
+              Loading experience
+            </span>
+          </div>
+        </div>
         <NoiseOverlay />
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
   );

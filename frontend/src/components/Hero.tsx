@@ -1,6 +1,10 @@
 import Scene3D from "./Scene3D";
 
-export default function Hero() {
+interface HeroProps {
+  onBonsaiLoaded?: () => void;
+}
+
+export default function Hero({ onBonsaiLoaded }: HeroProps) {
   return (
     <section id="home" className="relative min-h-screen flex flex-col justify-between px-6 md:px-12 pt-40 pb-12">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] md:text-xs tracking-widest text-muted uppercase">
@@ -29,7 +33,7 @@ export default function Hero() {
               <span className="absolute bottom-4 left-4 w-8 h-8 border-b border-l border-foreground/30" />
             </div>
             <div className="relative w-full h-full z-10">
-              <Scene3D />
+              <Scene3D onLoaded={onBonsaiLoaded} />
             </div>
           </div>
         </div>
