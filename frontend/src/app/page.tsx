@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -11,6 +12,10 @@ import { useBonsaiLoad } from "@/hooks/useBonsaiLoad";
 
 export default function Home() {
   const { loaded, setBonsaiLoaded } = useBonsaiLoad();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
 
   return (
     <>

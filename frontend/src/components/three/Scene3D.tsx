@@ -6,6 +6,7 @@ import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 import { ASSETS } from "@/lib/constants";
 import { BONSAI_CONFIG } from "@/lib/bonsai.config";
+import CameraController from "./CameraController";
 
 interface BonsaiProps {
   onLoaded?: () => void;
@@ -26,11 +27,10 @@ function Bonsai({ onLoaded }: BonsaiProps) {
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} position={BONSAI_CONFIG.bonsai.position}>
       <Center>
         <primitive
           object={scene}
-          position={BONSAI_CONFIG.bonsai.position}
           rotation={BONSAI_CONFIG.bonsai.rotation}
           scale={BONSAI_CONFIG.bonsai.scale}
         />
@@ -63,6 +63,7 @@ export default function Scene3D({ onLoaded }: Scene3DProps) {
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
+        <CameraController />
         <ambientLight intensity={lights.ambient.intensity} />
         {lights.directional.map((light, index) => (
           <directionalLight key={index} position={light.position} intensity={light.intensity} />
