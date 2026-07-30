@@ -11,7 +11,7 @@ import LoadingController from "@/components/loading/LoadingController";
 import { useBonsaiLoad } from "@/hooks/useBonsaiLoad";
 
 export default function Home() {
-  const { loaded, setBonsaiLoaded } = useBonsaiLoad();
+  const { loaded, setBonsaiLoaded, progress } = useBonsaiLoad();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <>
-      <LoadingController loaded={loaded} />
+      <LoadingController loaded={loaded} progress={progress} />
       <main className="relative">
         <Navigation />
         <Hero onBonsaiLoaded={() => setBonsaiLoaded(true)} />
