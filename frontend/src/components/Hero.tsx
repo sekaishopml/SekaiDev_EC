@@ -6,8 +6,8 @@ interface HeroProps {
 
 export default function Hero({ onBonsaiLoaded }: HeroProps) {
   return (
-    <section id="home" className="relative min-h-screen flex flex-col justify-between px-6 md:px-12 pt-40 pb-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] md:text-xs tracking-widest text-muted uppercase">
+    <section id="home" className="relative min-h-[110vh] flex flex-col justify-between px-6 md:px-12 pt-48 md:pt-60 pb-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] md:text-xs tracking-widest text-muted uppercase mt-4">
         <div className="flex flex-col gap-2">
           <span>Software Studio</span>
           <span>Dev 01</span>
@@ -19,7 +19,7 @@ export default function Hero({ onBonsaiLoaded }: HeroProps) {
         </div>
       </div>
 
-      <div className="relative w-full h-[60vh] md:h-[70vh]">
+      <div className="relative w-full h-[55vh] md:h-[65vh] mt-12">
         <Scene3D onLoaded={onBonsaiLoaded} />
       </div>
 
