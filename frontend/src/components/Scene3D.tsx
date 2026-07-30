@@ -18,7 +18,7 @@ function Bonsai() {
   return (
     <group ref={groupRef}>
       <Center>
-        <primitive object={scene} scale={5} />
+        <primitive object={scene} scale={3} />
       </Center>
     </group>
   );
@@ -50,7 +50,7 @@ export default function Scene3D() {
   return (
     <div className="relative w-full h-full">
       <Canvas
-        camera={{ position: [0, 1.2, 3.5], fov: 35, near: 0.1, far: 100 }}
+        camera={{ position: [0, 1.5, 4.5], fov: 35, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
