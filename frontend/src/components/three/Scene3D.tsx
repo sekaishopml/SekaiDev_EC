@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 import { ASSETS } from "@/lib/constants";
+import { BONSAI_CONFIG } from "@/lib/bonsai.config";
 
 interface BonsaiProps {
   onLoaded?: () => void;
@@ -20,14 +21,19 @@ function Bonsai({ onLoaded }: BonsaiProps) {
 
   useFrame((_, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.15;
+      groupRef.current.rotation.y += delta * BONSAI_CONFIG.animation.rotationSpeed;
     }
   });
 
   return (
     <group ref={groupRef}>
       <Center>
-        <primitive object={scene} scale={3} />
+        <primitive
+          object={scene}
+          position={BONSAI_CONFIG.bonsai.position}
+          rotation={BONSAI_CONFIG.bonsai.rotation}
+          scale={BONSAI_CONFIG.bonsai.scale}
+        />
       </Center>
     </group>
   );
@@ -42,18 +48,28 @@ interface Scene3DProps {
  * and notifies the parent when it is ready.
  */
 export default function Scene3D({ onLoaded }: Scene3DProps) {
+  const { camera, lights } = BONSAI_CONFIG;
+
   return (
     <div className="relative w-full h-full">
       <Canvas
-        camera={{ position: [0, 1.5, 4.5], fov: 35, near: 0.1, far: 100 }}
+        camera={{
+          position: camera.position,
+          fov: camera.fov,
+          near: camera.near,
+          far: camera.far,
+        }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[5, 8, 5]} intensity={1.5} />
-        <directionalLight position={[-5, 4, -5]} intensity={0.6} />
-        <pointLight position={[0, 4, 0]} intensity={0.8} />
+        <ambientLight intensity={lights.ambient.intensity} />
+        {lights.directional.map((light, index) => (
+          <directionalLight key={index} position={light.position} intensity={light.intensity} />
+        ))}
+        {lights.point.map((light, index) => (
+          <pointLight key={index} position={light.position} intensity={light.intensity} />
+        ))}
         <Suspense fallback={null}>
           <Bonsai onLoaded={onLoaded} />
         </Suspense>

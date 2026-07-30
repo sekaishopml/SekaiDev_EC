@@ -11,7 +11,7 @@ frontend/
     loading/            # Splash screen logic
     three/              # React Three Fiber / bonsai scene
   src/hooks/            # Reusable state hooks
-  src/lib/              # Constants, utilities
+  src/lib/              # Constants, utilities, bonsai.config.ts
   public/models/        # sakura_bonsai.glb
   public/draco/         # Self-hosted Draco decoder files
 backend/
@@ -36,6 +36,7 @@ systemd/
 - Model: `public/models/sakura_bonsai.glb` (Draco-compressed).
 - Decoder: self-hosted `public/draco/` (loaded by `useGLTF(model, dracoPath)`).
 - Scene component: `src/components/three/Scene3D.tsx`.
+- Tweak position, rotation, scale, camera and lights in `src/lib/bonsai.config.ts`.
 
 ## Deployment workflow
 
