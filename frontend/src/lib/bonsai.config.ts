@@ -24,7 +24,7 @@ export const BONSAI_CONFIG = {
     rotation: [0, Math.PI, 0] as [number, number, number],
 
     // Scale requested by client
-    scale: 18,
+    scale: 14,
   },
 
   // Auto-rotation
