@@ -4,7 +4,7 @@
 export const BONSAI_CONFIG = {
   // Camera settings
   camera: {
-    position: [0, 1.5, 4.5] as [number, number, number],
+    position: [0, 1.2, 3.8] as [number, number, number],
     fov: 35,
     near: 0.1,
     far: 100,
@@ -13,14 +13,16 @@ export const BONSAI_CONFIG = {
   // Main model transform
   bonsai: {
     // Starting position (x, y, z)
-    position: [0, 0, 0] as [number, number, number],
+    // Lower Y hides the pot below the frame while keeping flowers in view
+    position: [0, -1.2, 0] as [number, number, number],
 
     // Starting rotation in radians (x, y, z)
-    // Y rotation turned so the flowers face the camera
-    rotation: [0, -Math.PI / 2, 0] as [number, number, number],
+    // X = tilt forward like a hanging branch
+    // Y = rotate so flowers face the camera
+    rotation: [-0.6, Math.PI, 0] as [number, number, number],
 
     // Scale (uniform)
-    scale: 3,
+    scale: 4,
   },
 
   // Auto-rotation
