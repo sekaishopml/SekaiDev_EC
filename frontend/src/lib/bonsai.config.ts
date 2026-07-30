@@ -16,8 +16,8 @@ export const BONSAI_CONFIG = {
 
   // Main model transform
   bonsai: {
-    // Shifted slightly down (+Z) so the top of the flowers does not clip
-    position: [0, -0.6, 1.2] as [number, number, number],
+    // Centered vertically so the flowers do not clip at the top
+    position: [0, -0.6, 0] as [number, number, number],
 
     // Starting rotation in radians (x, y, z)
     // Y rotation so the flowers face the camera
