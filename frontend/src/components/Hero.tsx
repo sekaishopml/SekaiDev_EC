@@ -19,24 +19,8 @@ export default function Hero({ onBonsaiLoaded }: HeroProps) {
         </div>
       </div>
 
-      <div className="relative w-full max-w-5xl mx-auto my-8">
-        <div className="frame relative aspect-[4/3] md:aspect-[16/10] w-full">
-          <div className="frame-grain absolute inset-0 opacity-[0.06] pointer-events-none" aria-hidden="true" />
-          <div className="absolute inset-0 border border-foreground/20 p-4 md:p-6">
-            <div className="absolute inset-0 border border-foreground/10" />
-            <div className="frame-cross absolute inset-0 pointer-events-none" aria-hidden="true">
-              <span className="absolute top-1/2 left-0 w-full h-px bg-foreground/10" />
-              <span className="absolute left-1/2 top-0 h-full w-px bg-foreground/10" />
-              <span className="absolute top-4 left-4 w-8 h-8 border-t border-l border-foreground/30" />
-              <span className="absolute top-4 right-4 w-8 h-8 border-t border-r border-foreground/30" />
-              <span className="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-foreground/30" />
-              <span className="absolute bottom-4 left-4 w-8 h-8 border-b border-l border-foreground/30" />
-            </div>
-            <div className="relative w-full h-full z-10">
-              <Scene3D onLoaded={onBonsaiLoaded} />
-            </div>
-          </div>
-        </div>
+      <div className="relative w-full h-[60vh] md:h-[70vh]">
+        <Scene3D onLoaded={onBonsaiLoaded} />
       </div>
 
       <div className="grid grid-cols-2 gap-4 items-end">
