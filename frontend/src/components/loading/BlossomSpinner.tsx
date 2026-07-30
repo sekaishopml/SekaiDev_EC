@@ -2,15 +2,15 @@
 
 export default function BlossomSpinner() {
   return (
-    <div className="relative w-24 h-24 md:w-32 md:h-32">
+    <div className="relative w-16 h-16 md:w-20 md:h-20">
       <style>{`
         @keyframes draw-vine {
           0% { stroke-dashoffset: 100; }
           100% { stroke-dashoffset: 0; }
         }
         @keyframes bloom {
-          0%, 60% { transform: scale(0) rotate(-20deg); opacity: 0; }
-          85% { transform: scale(1.15) rotate(5deg); opacity: 1; }
+          0%, 55% { transform: scale(0) rotate(-18deg); opacity: 0; }
+          85% { transform: scale(1.2) rotate(5deg); opacity: 1; }
           100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         .blossom-vine {
@@ -23,7 +23,7 @@ export default function BlossomSpinner() {
           transform-origin: center;
           transform: scale(0);
           opacity: 0;
-          animation: bloom 1.2s ease-out forwards;
+          animation: bloom 1s ease-out forwards;
         }
       `}</style>
       <svg viewBox="0 0 100 100" className="w-full h-full" fill="none">
@@ -34,106 +34,132 @@ export default function BlossomSpinner() {
           </linearGradient>
         </defs>
 
-        {/* Main wreath branch */}
+        {/* Main organic wreath branch — draws from a line into a full circle */}
         <path
-          d="M50,5 C28,8 12,28 12,52 C12,74 30,92 50,95 C70,92 88,74 88,52 C88,28 72,8 50,5"
+          d="M50,6 A45,45 0 1,1 49.99,6"
           pathLength="100"
           stroke="url(#branchGrad)"
-          strokeWidth="3"
+          strokeWidth="2.2"
           strokeLinecap="round"
-          strokeLinejoin="round"
           className="blossom-vine"
         />
 
-        {/* Twigs */}
-        {TWIGS.map((t, i) => (
+        {/* Left-side thorny twigs */}
+        {THORNS.map((t, i) => (
           <path
             key={i}
             d={t.d}
             pathLength="100"
             stroke="#f43f5e"
-            strokeWidth="1.8"
+            strokeWidth="1.2"
             strokeLinecap="round"
             className="blossom-vine"
             style={{ animationDelay: `${t.delay}s` }}
           />
         ))}
 
-        {/* Flowers bloom along the wreath */}
-        {FLOWERS.map((f, i) => (
+        {/* Small twigs around the smooth part */}
+        {TWIGS.map((t, i) => (
+          <path
+            key={i}
+            d={t.d}
+            pathLength="100"
+            stroke="#f43f5e"
+            strokeWidth="1.1"
+            strokeLinecap="round"
+            className="blossom-vine"
+            style={{ animationDelay: `${t.delay}s` }}
+          />
+        ))}
+
+        {/* Flowers and buds bloom in sequence */}
+        {BLOSSOMS.map((b, i) => (
           <g
             key={i}
             className="blossom-flower"
-            style={{ animationDelay: `${f.delay}s` }}
+            style={{ animationDelay: `${b.delay}s` }}
           >
-            <Flower x={f.x} y={f.y} scale={f.scale} />
+            <g transform={`translate(${b.x},${b.y}) scale(${b.scale})`}>
+              {b.variant === "m" && <FlowerMedium />}
+              {b.variant === "s" && <FlowerSmall />}
+              {b.variant === "bud" && <Bud />}
+            </g>
           </g>
         ))}
       </svg>
 
-      <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] md:text-[9px] tracking-[0.25em] uppercase text-rose-400/80 whitespace-nowrap">
+      <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[7px] md:text-[8px] tracking-[0.25em] uppercase text-rose-400/80 whitespace-nowrap">
         blossom
       </span>
     </div>
   );
 }
 
+const THORNS = [
+  { d: "M20 36 L8 30", delay: 0.2 },
+  { d: "M17 50 L4 50", delay: 0.3 },
+  { d: "M20 64 L8 70", delay: 0.4 },
+  { d: "M28 26 L16 18", delay: 0.5 },
+  { d: "M28 74 L16 82", delay: 0.6 },
+];
+
 const TWIGS = [
-  { d: "M50 5 L62 12", delay: 0.15 },
-  { d: "M28 18 L18 14", delay: 0.35 },
-  { d: "M12 52 L5 46", delay: 0.55 },
-  { d: "M28 82 L22 92", delay: 0.75 },
-  { d: "M50 95 L40 90", delay: 0.95 },
-  { d: "M72 82 L80 92", delay: 1.15 },
-  { d: "M88 52 L95 58", delay: 1.35 },
-  { d: "M72 18 L80 12", delay: 1.55 },
+  { d: "M50 6 L57 2", delay: 0.55 },
+  { d: "M83 24 L91 20", delay: 0.7 },
+  { d: "M91 50 L98 54", delay: 0.85 },
+  { d: "M83 76 L91 82", delay: 1.0 },
+  { d: "M50 93 L44 98", delay: 1.15 },
 ];
 
-const FLOWERS = [
-  { x: 50, y: 5, delay: 0.4, scale: 1 },
-  { x: 28, y: 18, delay: 0.55, scale: 0.85 },
-  { x: 12, y: 52, delay: 0.7, scale: 1 },
-  { x: 28, y: 82, delay: 0.85, scale: 0.9 },
-  { x: 50, y: 95, delay: 1.0, scale: 1 },
-  { x: 72, y: 82, delay: 1.15, scale: 0.85 },
-  { x: 88, y: 52, delay: 1.3, scale: 1 },
-  { x: 72, y: 18, delay: 1.45, scale: 0.9 },
-  { x: 38, y: 36, delay: 1.05, scale: 0.75 },
-  { x: 62, y: 36, delay: 1.2, scale: 0.75 },
-  { x: 38, y: 68, delay: 1.35, scale: 0.75 },
-  { x: 62, y: 68, delay: 1.5, scale: 0.75 },
+const BLOSSOMS = [
+  { x: 50, y: 6, scale: 1, variant: "m" as const, delay: 0.45 },
+  { x: 69, y: 13, scale: 0.9, variant: "bud" as const, delay: 0.55 },
+  { x: 85, y: 26, scale: 1, variant: "s" as const, delay: 0.65 },
+  { x: 92, y: 42, scale: 0.9, variant: "bud" as const, delay: 0.75 },
+  { x: 92, y: 50, scale: 1, variant: "m" as const, delay: 0.85 },
+  { x: 91, y: 59, scale: 0.9, variant: "bud" as const, delay: 0.95 },
+  { x: 84, y: 74, scale: 1, variant: "s" as const, delay: 1.05 },
+  { x: 69, y: 87, scale: 0.9, variant: "bud" as const, delay: 1.15 },
+  { x: 50, y: 93, scale: 1, variant: "m" as const, delay: 1.25 },
+  { x: 33, y: 87, scale: 1, variant: "s" as const, delay: 1.35 },
+  { x: 20, y: 76, scale: 0.9, variant: "bud" as const, delay: 1.45 },
+  { x: 13, y: 59, scale: 0.9, variant: "bud" as const, delay: 1.55 },
+  { x: 13, y: 41, scale: 0.9, variant: "bud" as const, delay: 1.65 },
+  { x: 20, y: 25, scale: 0.9, variant: "bud" as const, delay: 1.75 },
 ];
 
-function Flower({ x, y, scale = 1 }: { x: number; y: number; scale?: number }) {
-  const s = scale;
+function FlowerMedium() {
   return (
-    <g transform={`translate(${x - 50 * s},${y - 50 * s}) scale(${s})`}>
-      {/* leaves */}
-      <ellipse cx="58" cy="55" rx="2.5" ry="5" fill="#10b981" opacity="0.8" transform="rotate(45 58 55)" />
-      <ellipse cx="42" cy="55" rx="2.5" ry="5" fill="#10b981" opacity="0.8" transform="rotate(-45 42 55)" />
-
-      {/* petals */}
-      <Petal cx={50} cy={38} rotate={0} />
-      <Petal cx={59} cy={45} rotate={72} />
-      <Petal cx={56} cy={57} rotate={144} />
-      <Petal cx={44} cy={57} rotate={216} />
-      <Petal cx={41} cy={45} rotate={288} />
-
-      {/* center */}
-      <circle cx="50" cy="50" r="3" fill="#fecdd3" />
-    </g>
+    <>
+      <ellipse cx="0" cy="-4" rx="2" ry="4" fill="#f43f5e" />
+      <ellipse cx="3.8" cy="-1.2" rx="2" ry="4" fill="#f43f5e" transform="rotate(72)" />
+      <ellipse cx="2.3" cy="3.2" rx="2" ry="4" fill="#f43f5e" transform="rotate(144)" />
+      <ellipse cx="-2.3" cy="3.2" rx="2" ry="4" fill="#f43f5e" transform="rotate(216)" />
+      <ellipse cx="-3.8" cy="-1.2" rx="2" ry="4" fill="#f43f5e" transform="rotate(288)" />
+      <circle r="1.3" fill="#fecdd3" />
+    </>
   );
 }
 
-function Petal({ cx, cy, rotate }: { cx: number; cy: number; rotate: number }) {
+function FlowerSmall() {
   return (
-    <ellipse
-      cx={cx}
-      cy={cy}
-      rx="5"
-      ry="9"
-      fill="#f43f5e"
-      transform={`rotate(${rotate} ${cx} ${cy})`}
-    />
+    <>
+      <ellipse cx="0" cy="-3" rx="1.5" ry="2.8" fill="#f43f5e" />
+      <ellipse cx="2.8" cy="-0.9" rx="1.5" ry="2.8" fill="#f43f5e" transform="rotate(72)" />
+      <ellipse cx="1.7" cy="2.3" rx="1.5" ry="2.8" fill="#f43f5e" transform="rotate(144)" />
+      <ellipse cx="-1.7" cy="2.3" rx="1.5" ry="2.8" fill="#f43f5e" transform="rotate(216)" />
+      <ellipse cx="-2.8" cy="-0.9" rx="1.5" ry="2.8" fill="#f43f5e" transform="rotate(288)" />
+      <circle r="1" fill="#fecdd3" />
+    </>
+  );
+}
+
+function Bud() {
+  return (
+    <>
+      <circle r="1.4" fill="#fda4af" />
+      <ellipse cx="-1.1" cy="-0.4" rx="0.5" ry="1.2" fill="#f43f5e" transform="rotate(-35)" />
+      <ellipse cx="1.1" cy="-0.4" rx="0.5" ry="1.2" fill="#f43f5e" transform="rotate(35)" />
+    </>
   );
 }
