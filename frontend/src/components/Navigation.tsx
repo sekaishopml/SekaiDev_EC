@@ -14,15 +14,19 @@ const socials = [
   { label: "BEHANCE", href: "#" },
 ];
 
+/**
+ * Fixed header. Its explicit height (h-20 / md:h-24) is consumed by Hero
+ * so the 3D scene can start exactly below it.
+ */
 export default function Navigation() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 px-6 py-6 md:px-12 md:py-8 bg-background">
-      <div className="grid grid-cols-3 items-start gap-4">
+    <header className="fixed top-0 left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background">
+      <div className="grid grid-cols-3 items-center h-full gap-4">
         <Link href="#home" className="font-display text-2xl md:text-3xl font-bold leading-none tracking-tighter text-foreground">
           SEKAI<br />DEV
         </Link>
 
-        <nav className="hidden md:flex justify-center gap-8 lg:gap-12 text-[10px] lg:text-xs tracking-widest font-medium pt-1">
+        <nav className="hidden md:flex justify-center gap-8 lg:gap-12 text-[10px] lg:text-xs tracking-widest font-medium">
           {links.map((l, i) => (
             <Link key={l.label} href={l.href} className="group flex items-center gap-2 hover:text-accent transition-colors">
               <span className="text-muted">0{i + 1}</span>
@@ -34,8 +38,8 @@ export default function Navigation() {
           ))}
         </nav>
 
-        <div className="hidden md:flex flex-col items-end text-right">
-          <div className="flex gap-6 lg:gap-8 text-[10px] lg:text-xs tracking-widest font-medium mb-3">
+        <div className="hidden md:flex flex-col items-end text-right justify-center">
+          <div className="flex gap-6 lg:gap-8 text-[10px] lg:text-xs tracking-widest font-medium mb-1">
             {socials.map((s, i) => (
               <a key={s.label} href={s.href} className="group flex items-center gap-2 hover:text-accent transition-colors">
                 <span className="text-muted">0{i + 1}</span>

@@ -4,39 +4,47 @@ interface HeroProps {
   onBonsaiLoaded?: () => void;
 }
 
+const TopLabels = () => (
+  <div className="absolute top-24 md:top-28 left-6 right-6 z-10 grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] md:text-xs tracking-widest text-muted/90 uppercase pointer-events-none drop-shadow-sm">
+    <div className="flex flex-col gap-1">
+      <span>Software Studio</span>
+      <span>Dev 01</span>
+    </div>
+    <div className="hidden md:block md:col-span-2" />
+    <div className="text-right flex flex-col gap-1 md:text-right">
+      <span>Portfolio 2025</span>
+      <span>Next Project</span>
+    </div>
+  </div>
+);
+
+const BottomLabels = () => (
+  <div className="absolute bottom-8 left-6 right-6 z-10 grid grid-cols-2 gap-4 items-end pointer-events-none">
+    <p className="text-xs md:text-sm tracking-widest uppercase text-foreground/80 max-w-md drop-shadow-sm">
+      Building scalable products / helping brands stand out
+    </p>
+    <div className="flex flex-col items-end gap-1 text-[10px] md:text-xs tracking-widest text-muted/90 drop-shadow-sm">
+      <span>99%</span>
+      <span className="flex items-center gap-2">
+        Scroll down to explore
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M8 1v14M8 14l-4-4M8 14l4-4" />
+        </svg>
+      </span>
+    </div>
+  </div>
+);
+
 export default function Hero({ onBonsaiLoaded }: HeroProps) {
   return (
-    <section id="home" className="relative min-h-[110vh] flex flex-col justify-between px-6 md:px-12 pt-48 md:pt-60 pb-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] md:text-xs tracking-widest text-muted uppercase mt-4">
-        <div className="flex flex-col gap-2">
-          <span>Software Studio</span>
-          <span>Dev 01</span>
-        </div>
-        <div className="hidden md:block md:col-span-2" />
-        <div className="text-right flex flex-col gap-2 md:text-right">
-          <span>Portfolio 2025</span>
-          <span>Next Project</span>
-        </div>
-      </div>
+    <section id="home" className="relative h-screen pt-20 md:pt-24 overflow-hidden">
+      <TopLabels />
 
-      <div className="relative w-full h-[55vh] md:h-[65vh] mt-12">
+      <div className="absolute inset-x-0 top-20 md:top-24 bottom-0 z-0">
         <Scene3D onLoaded={onBonsaiLoaded} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 items-end">
-        <p className="text-xs md:text-sm tracking-widest uppercase text-foreground/70 max-w-md">
-          Building scalable products / helping brands stand out
-        </p>
-        <div className="flex flex-col items-end gap-2 text-[10px] md:text-xs tracking-widest text-muted">
-          <span>99%</span>
-          <span className="flex items-center gap-2">
-            Scroll down to explore
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M8 1v14M8 14l-4-4M8 14l4-4" />
-            </svg>
-          </span>
-        </div>
-      </div>
+      <BottomLabels />
     </section>
   );
 }
