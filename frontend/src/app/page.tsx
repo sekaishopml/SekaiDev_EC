@@ -1,33 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Works from "@/components/Works";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import LoadingScreen from "@/components/LoadingScreen";
+import LoadingController from "@/components/loading/LoadingController";
+import { useBonsaiLoad } from "@/hooks/useBonsaiLoad";
 
 export default function Home() {
-  const [bonsaiLoaded, setBonsaiLoaded] = useState(false);
-  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
-  const [maxTimeElapsed, setMaxTimeElapsed] = useState(false);
-
-  useEffect(() => {
-    const minTimer = setTimeout(() => setMinTimeElapsed(true), 1800);
-    const maxTimer = setTimeout(() => setMaxTimeElapsed(true), 10000);
-    return () => {
-      clearTimeout(minTimer);
-      clearTimeout(maxTimer);
-    };
-  }, []);
-
-  const loaded = (bonsaiLoaded && minTimeElapsed) || maxTimeElapsed;
+  const { loaded, setBonsaiLoaded } = useBonsaiLoad();
 
   return (
     <>
-      <LoadingScreen loaded={loaded} />
+      <LoadingController loaded={loaded} />
       <main className="relative">
         <Navigation />
         <Hero onBonsaiLoaded={() => setBonsaiLoaded(true)} />

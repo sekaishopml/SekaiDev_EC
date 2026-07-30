@@ -1,4 +1,4 @@
-import Scene3D from "./Scene3D";
+import Scene3D from "@/components/three/Scene3D";
 
 interface HeroProps {
   onBonsaiLoaded?: () => void;

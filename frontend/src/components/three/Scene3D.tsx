@@ -4,6 +4,7 @@ import { Suspense, useRef, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
+import { ASSETS } from "@/lib/constants";
 
 interface BonsaiProps {
   onLoaded?: () => void;
@@ -11,7 +12,7 @@ interface BonsaiProps {
 
 function Bonsai({ onLoaded }: BonsaiProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const { scene } = useGLTF("/models/sakura_bonsai.glb", "/draco/");
+  const { scene } = useGLTF(ASSETS.model, ASSETS.dracoPath);
 
   useEffect(() => {
     onLoaded?.();
@@ -32,7 +33,15 @@ function Bonsai({ onLoaded }: BonsaiProps) {
   );
 }
 
-export default function Scene3D({ onLoaded }: { onLoaded?: () => void }) {
+interface Scene3DProps {
+  onLoaded?: () => void;
+}
+
+/**
+ * 3D canvas for the sakura bonsai. Loads the compressed GLB with Draco
+ * and notifies the parent when it is ready.
+ */
+export default function Scene3D({ onLoaded }: Scene3DProps) {
   return (
     <div className="relative w-full h-full">
       <Canvas

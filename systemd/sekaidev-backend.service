@@ -1,0 +1,16 @@
+[Unit]
+Description=SekaiDev Go Backend
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/SekaiDevEC/backend
+ExecStart=/opt/SekaiDevEC/backend/main
+Restart=always
+RestartSec=5
+Environment="DATABASE_URL=postgres://sekai:sekai@localhost:5432/sekaidev"
+Environment="PORT=8000"
+
+[Install]
+WantedBy=multi-user.target
