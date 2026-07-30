@@ -2,7 +2,7 @@
 
 import { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Center, Environment } from "@react-three/drei";
+import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 
 function Bonsai() {
@@ -24,11 +24,11 @@ function Bonsai() {
   );
 }
 
-function ModelLoader() {
+function Fallback() {
   return (
-    <Suspense fallback={null}>
-      <Bonsai />
-    </Suspense>
+    <div className="w-full h-full flex items-center justify-center text-[10px] tracking-widest text-muted uppercase">
+      loading bonsai…
+    </div>
   );
 }
 
@@ -40,11 +40,7 @@ export default function Scene3D() {
   }, []);
 
   if (!mounted) {
-    return (
-      <div className="w-full h-full flex items-center justify-center text-[10px] tracking-widest text-muted uppercase">
-        loading bonsai…
-      </div>
-    );
+    return <Fallback />;
   }
 
   return (
@@ -55,11 +51,13 @@ export default function Scene3D() {
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
-        <pointLight position={[-5, 5, -5]} intensity={0.6} />
-        <Environment preset="studio" />
-        <ModelLoader />
+        <ambientLight intensity={0.8} />
+        <directionalLight position={[5, 8, 5]} intensity={1.5} />
+        <directionalLight position={[-5, 4, -5]} intensity={0.6} />
+        <pointLight position={[0, 4, 0]} intensity={0.8} />
+        <Suspense fallback={null}>
+          <Bonsai />
+        </Suspense>
       </Canvas>
     </div>
   );
