@@ -4,20 +4,20 @@
 export const BONSAI_CONFIG = {
   // Camera settings
   camera: {
-    // Top-down view, close enough so scale 18 fills the screen
-    position: [0, 9, 0.2] as [number, number, number],
+    // Top-down view with a tighter lens so scale 18 fills the screen
+    position: [0, 5.5, 0.2] as [number, number, number],
     target: [0, 0, 0] as [number, number, number],
-    // World -Z points up on screen so +Z moves the model down
+    // World -Z points up on screen; +Z moves the model down
     up: [0, 0, -1] as [number, number, number],
-    fov: 55,
+    fov: 24,
     near: 0.1,
     far: 100,
   },
 
   // Main model transform
   bonsai: {
-    // Shifted down (+Z) to keep the top of the flowers inside the frame
-    position: [0, -0.6, 1.5] as [number, number, number],
+    // Shifted slightly down (+Z) so the top of the flowers does not clip
+    position: [0, -0.6, 1.2] as [number, number, number],
 
     // Starting rotation in radians (x, y, z)
     // Y rotation so the flowers face the camera
