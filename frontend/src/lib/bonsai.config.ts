@@ -16,7 +16,8 @@ export const BONSAI_CONFIG = {
     position: [0, 0, 0] as [number, number, number],
 
     // Starting rotation in radians (x, y, z)
-    rotation: [0, 0, 0] as [number, number, number],
+    // Y rotation turned so the flowers face the camera
+    rotation: [0, -Math.PI / 2, 0] as [number, number, number],
 
     // Scale (uniform)
     scale: 3,
