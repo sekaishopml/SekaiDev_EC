@@ -1,73 +1,37 @@
 "use client";
 
-import {
-  Suspense,
-  useRef,
-  useEffect,
-  useMemo,
-  type RefObject,
-} from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, Center } from "@react-three/drei";
+import { useRef, useEffect, useMemo, type RefObject } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { View, useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 import { ASSETS } from "@/lib/constants";
 import { BONSAI_CONFIG } from "@/lib/bonsai.config";
 import { useViewport } from "@/hooks/useViewport";
 import CameraController from "./CameraController";
 
-/**
- * Pauses rendering when the canvas container leaves the viewport.
- * With frameloop="demand" we invalidate the next frame only while visible,
- * avoiding wasted WebGL work once the hero is scrolled away.
- */
-function RenderController({
-  containerRef,
-}: {
-  containerRef: RefObject<HTMLDivElement>;
-}) {
-  const { invalidate } = useThree();
-  const visibleRef = useRef(true);
-
-  useFrame(() => {
-    if (visibleRef.current) {
-      invalidate();
-    }
-  });
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        visibleRef.current = entry.isIntersecting;
-        if (visibleRef.current) invalidate();
-      },
-      { threshold: 0 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [containerRef, invalidate]);
-
-  return null;
+export interface TrackMetrics {
+  width: number;
+  height: number;
+  ratioW: number;
+  ratioH: number;
 }
 
 interface BonsaiProps {
   onLoaded?: () => void;
-  scale?: number;
+  baseScale?: number;
   position?: [number, number, number];
+  trackRef?: RefObject<TrackMetrics | null>;
 }
 
-function Bonsai({
+export function Bonsai({
   onLoaded,
-  scale: baseScale = BONSAI_CONFIG.bonsai.scale,
+  baseScale = BONSAI_CONFIG.bonsai.scale,
   position = BONSAI_CONFIG.bonsai.position,
+  trackRef,
 }: BonsaiProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(ASSETS.model, ASSETS.dracoPath);
   const clonedScene = useMemo(() => scene.clone(), [scene]);
-  const { size } = useThree();
 
   useEffect(() => {
     onLoaded?.();
@@ -78,16 +42,22 @@ function Bonsai({
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
-    const viewportWidth =
-      typeof window !== "undefined"
-        ? document.documentElement.clientWidth
-        : size.width || 1;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
 
-    // Scale the model proportionally to the canvas container width,
-    // so it keeps its relative size when the parent shrinks (e.g. hero -> rectangle).
-    // Use sqrt so the model shrinks less aggressively in smaller frames and stays visible.
-    const ratio = size.width / viewportWidth;
-    const factor = Math.max(Math.sqrt(ratio), 0.55);
+    // Scale the model so it fills the View track (object-fit: cover).
+    // HeroSection updates trackRef in the GSAP onUpdate, so the bonsai
+    // stays sized correctly as the rectangle animates.
+    const metrics = trackRef?.current ?? {
+      width: viewportWidth,
+      height: viewportHeight,
+      ratioW: 1,
+      ratioH: 1,
+    };
+    const ratioW = metrics.ratioW ?? metrics.width / viewportWidth;
+    const ratioH = metrics.ratioH ?? metrics.height / viewportHeight;
+    const factor = Math.min(Math.max(ratioW, ratioH) * 1.05, 1);
+
     const targetScale = baseScale * factor;
 
     targetScaleVec.set(targetScale, targetScale, targetScale);
@@ -109,30 +79,22 @@ function Bonsai({
   );
 }
 
-interface Scene3DProps {
+interface BonsaiSceneProps {
   onLoaded?: () => void;
-  scale?: number;
+  trackRef?: RefObject<TrackMetrics | null>;
 }
 
-/**
- * 3D canvas for the sakura bonsai. Loads the compressed GLB with Draco
- * and notifies the parent when it is ready. Scales the model and camera
- * responsively for mobile, tablet and desktop viewports.
- */
-export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+export function BonsaiScene({ onLoaded, trackRef }: BonsaiSceneProps) {
   const width = useViewport();
   const isMobile = width < 768;
   const isTablet = width < 1024;
 
-  const baseScale = scaleProp ?? BONSAI_CONFIG.bonsai.scale;
-
-  const { scale, cameraConfig } = useMemo(() => {
+  const { scale: baseScale, cameraConfig } = useMemo(() => {
     const scale = isMobile
-      ? baseScale * 0.6
+      ? BONSAI_CONFIG.bonsai.scale * 0.65
       : isTablet
-      ? baseScale * 0.8
-      : baseScale;
+      ? BONSAI_CONFIG.bonsai.scale * 0.85
+      : BONSAI_CONFIG.bonsai.scale;
     const cameraY = isMobile ? 6.5 : BONSAI_CONFIG.camera.position[1];
     return {
       scale,
@@ -141,49 +103,57 @@ export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
         position: [0, cameraY, 0.2] as [number, number, number],
       },
     };
-  }, [isMobile, isTablet, baseScale]);
+  }, [isMobile, isTablet]);
 
   const { lights } = BONSAI_CONFIG;
 
   return (
-    <div ref={containerRef} className="relative w-full h-full">
-      <Canvas
-        frameloop="demand"
-        camera={{
-          position: cameraConfig.position,
-          fov: cameraConfig.fov,
-          near: cameraConfig.near,
-          far: cameraConfig.far,
-        }}
-        dpr={[1, 1]}
-        gl={{
-          antialias: true,
-          alpha: true,
-          powerPreference: "high-performance",
-        }}
-        style={{ background: "transparent" }}
-      >
-        <RenderController containerRef={containerRef} />
-        <CameraController cameraConfig={cameraConfig} />
-        <ambientLight intensity={lights.ambient.intensity} />
-        {lights.directional.map((light, index) => (
-          <directionalLight
-            key={index}
-            position={light.position}
-            intensity={light.intensity}
-          />
-        ))}
-        {lights.point.map((light, index) => (
-          <pointLight
-            key={index}
-            position={light.position}
-            intensity={light.intensity}
-          />
-        ))}
-        <Suspense fallback={null}>
-          <Bonsai onLoaded={onLoaded} scale={scale} />
-        </Suspense>
-      </Canvas>
-    </div>
+    <>
+      <CameraController cameraConfig={cameraConfig} />
+      <ambientLight intensity={lights.ambient.intensity} />
+      {lights.directional.map((light, index) => (
+        <directionalLight
+          key={index}
+          position={light.position}
+          intensity={light.intensity}
+        />
+      ))}
+      {lights.point.map((light, index) => (
+        <pointLight
+          key={index}
+          position={light.position}
+          intensity={light.intensity}
+        />
+      ))}
+      <Bonsai onLoaded={onLoaded} baseScale={baseScale} trackRef={trackRef} />
+    </>
+  );
+}
+
+/**
+ * A fixed, full-screen WebGL canvas. The actual bonsai is rendered via
+ * @react-three/drei `<View>` portals, so only the visible rectangle is drawn
+ * (gl.scissor), avoiding full-viewport fill-rate while the view resizes/moves.
+ */
+export function BonsaiCanvas() {
+  return (
+    <Canvas
+      frameloop="always"
+      camera={{
+        fov: BONSAI_CONFIG.camera.fov,
+        near: BONSAI_CONFIG.camera.near,
+        far: BONSAI_CONFIG.camera.far,
+      }}
+      dpr={[1, 1]}
+      gl={{
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      }}
+      className="fixed inset-0 z-[5] pointer-events-none"
+      style={{ background: "transparent" }}
+    >
+      <View.Port />
+    </Canvas>
   );
 }
