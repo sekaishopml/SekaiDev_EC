@@ -56,32 +56,22 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
     };
 
     const viewTarget = isMobile
-      ? { x: "5vw", y: "12vh", scaleX: 0.9, scaleY: 0.55 }
-      : { x: "53vw", y: "12.5vh", scaleX: 0.42, scaleY: 0.75 };
+      ? { x: "10vw", y: "14vh", scaleX: 0.8, scaleY: 0.45 }
+      : { x: "58vw", y: "12vh", scaleX: 0.32, scaleY: 0.42 };
 
     const leftTarget = isMobile
-      ? { top: "10%", left: "5%", width: "90vw", height: "36vh" }
-      : { top: "12.5%", left: "5%", width: "42vw", height: "75vh" };
+      ? { top: "14vh", left: "5%", width: "80vw", height: "30vh" }
+      : { top: "12vh", left: "5%", width: "46vw", height: "42vh" };
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=100%",
+          end: "+=70%",
           pin: true,
-          scrub: true,
+          scrub: 0.5,
           anticipatePin: 1,
-          snap: {
-            snapTo: (value: number, self?: { direction?: number }) => {
-              if (!self || self.direction === 0 || self.direction === undefined)
-                return value;
-              return self.direction < 0 ? 0 : 1;
-            },
-            duration: { min: 0.2, max: 0.35 },
-            delay: 0,
-            ease: "power2.inOut",
-          },
         },
       });
 
@@ -102,7 +92,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           ...viewTarget,
           borderRadius: "4px",
           transformOrigin: "top left",
-          ease: "power2.inOut",
+          ease: "none",
         },
         0
       );
@@ -124,7 +114,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           borderRadius: "4px",
           opacity: 1,
           transformOrigin: "top left",
-          ease: "power2.inOut",
+          ease: "none",
         },
         0
       );
@@ -148,7 +138,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
       tl.fromTo(
         labels,
         { opacity: 1, y: 0 },
-        { opacity: 0, y: -20, ease: "power2.inOut" },
+        { opacity: 0, y: -20, ease: "none" },
         0
       );
 
@@ -156,7 +146,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
       tl.fromTo(
         arc,
         { opacity: 1 },
-        { opacity: 0.25, ease: "power2.inOut" },
+        { opacity: 0.25, ease: "none" },
         0
       );
     }, section);
@@ -234,7 +224,8 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         {/* Black backing rectangle for the bonsai (seen through transparent canvas) */}
         <div
           ref={rightFrameRef}
-          className="absolute inset-0 z-[3] bg-black opacity-0 pointer-events-none"
+          className="absolute inset-0 z-[3] bg-black opacity-0"
+          style={{ pointerEvents: "none" }}
         />
 
         {/* View track: the visible rectangle the bonsai is rendered into */}
