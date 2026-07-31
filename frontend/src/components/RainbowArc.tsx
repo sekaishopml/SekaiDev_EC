@@ -1,9 +1,9 @@
 export default function RainbowArc() {
   return (
-    <div className="absolute top-0 left-0 w-full h-[45vh] z-[-1] pointer-events-none overflow-hidden">
+    <div className="absolute top-0 left-0 w-full h-[40vh] z-[-1] pointer-events-none overflow-hidden">
       <svg
         className="w-full h-full"
-        viewBox="0 0 1440 600"
+        viewBox="0 0 1440 500"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
@@ -18,20 +18,17 @@ export default function RainbowArc() {
             <stop offset="100%" stopColor="#22d3ee" />
           </linearGradient>
           <filter id="arcBlur" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="70" />
-          </filter>
-          <filter id="arcGrain" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur" />
-            <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch" result="noise" />
-            <feColorMatrix in="noise" type="saturate" values="0" result="grayNoise" />
-            <feBlend in="blur" in2="grayNoise" mode="overlay" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="45" />
           </filter>
         </defs>
         <path
-          d="M -200 600 Q 720 -200 1640 600 Z"
-          fill="url(#rainbow)"
-          filter="url(#arcGrain)"
-          opacity="0.7"
+          d="M -120 420 Q 720 -120 1560 420"
+          fill="none"
+          stroke="url(#rainbow)"
+          strokeWidth="180"
+          strokeLinecap="round"
+          filter="url(#arcBlur)"
+          opacity="0.85"
         />
       </svg>
       <div className="frame-grain absolute inset-0 opacity-30 mix-blend-overlay" aria-hidden="true" />
