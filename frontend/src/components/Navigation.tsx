@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useLayoutEffect, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import Link from "next/link";
 import Typewriter from "./Typewriter";
 
