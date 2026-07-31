@@ -1,6 +1,12 @@
 "use client";
 
-import { Suspense, useRef, useEffect, useMemo } from "react";
+import {
+  Suspense,
+  useRef,
+  useEffect,
+  useMemo,
+  type RefObject,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
@@ -8,6 +14,44 @@ import { ASSETS } from "@/lib/constants";
 import { BONSAI_CONFIG } from "@/lib/bonsai.config";
 import { useViewport } from "@/hooks/useViewport";
 import CameraController from "./CameraController";
+
+/**
+ * Pauses rendering when the canvas container leaves the viewport.
+ * With frameloop="demand" we invalidate the next frame only while visible,
+ * avoiding wasted WebGL work once the hero is scrolled away.
+ */
+function RenderController({
+  containerRef,
+}: {
+  containerRef: RefObject<HTMLDivElement>;
+}) {
+  const { invalidate } = useThree();
+  const visibleRef = useRef(true);
+
+  useFrame(() => {
+    if (visibleRef.current) {
+      invalidate();
+    }
+  });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visibleRef.current = entry.isIntersecting;
+        if (visibleRef.current) invalidate();
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [containerRef, invalidate]);
+
+  return null;
+}
 
 interface BonsaiProps {
   onLoaded?: () => void;
@@ -76,6 +120,7 @@ interface Scene3DProps {
  * responsively for mobile, tablet and desktop viewports.
  */
 export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const width = useViewport();
   const isMobile = width < 768;
   const isTablet = width < 1024;
@@ -101,15 +146,16 @@ export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
   const { lights } = BONSAI_CONFIG;
 
   return (
-    <div className="relative w-full h-full">
+    <div ref={containerRef} className="relative w-full h-full">
       <Canvas
+        frameloop="demand"
         camera={{
           position: cameraConfig.position,
           fov: cameraConfig.fov,
           near: cameraConfig.near,
           far: cameraConfig.far,
         }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1]}
         gl={{
           antialias: true,
           alpha: true,
@@ -117,6 +163,7 @@ export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
         }}
         style={{ background: "transparent" }}
       >
+        <RenderController containerRef={containerRef} />
         <CameraController cameraConfig={cameraConfig} />
         <ambientLight intensity={lights.ambient.intensity} />
         {lights.directional.map((light, index) => (

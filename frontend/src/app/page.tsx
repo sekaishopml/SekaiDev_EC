@@ -5,6 +5,7 @@ import LoadingController from "@/components/loading/LoadingController";
 import Navigation from "@/components/Navigation";
 import SmoothScroll from "@/components/SmoothScroll";
 import HeroSection from "@/components/HeroSection";
+import LookSection from "@/components/LookSection";
 import About from "@/components/About";
 import Works from "@/components/Works";
 import Contact from "@/components/Contact";
@@ -20,6 +21,7 @@ export default function Home() {
       <SmoothScroll>
         <main className="relative">
           <HeroSection onBonsaiLoaded={() => setBonsaiLoaded(true)} />
+          <LookSection />
           <About />
           <Works />
           <Contact footer={<Footer />} />

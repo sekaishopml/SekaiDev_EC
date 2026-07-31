@@ -189,6 +189,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
       <div
         ref={bonsaiFrameRef}
         className="absolute inset-0 z-10"
+        style={{ contain: "layout paint" }}
       >
         <div
           ref={canvasWrapperRef}
