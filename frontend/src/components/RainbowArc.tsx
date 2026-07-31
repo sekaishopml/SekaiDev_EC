@@ -1,6 +1,12 @@
 export default function RainbowArc() {
   return (
-    <div className="absolute top-0 left-0 w-full h-[40vh] z-[-1] pointer-events-none overflow-hidden">
+    <div
+      className="absolute top-0 left-0 w-full h-[50vh] z-[-1] pointer-events-none overflow-hidden"
+      style={{
+        maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 85%)",
+        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 85%)",
+      }}
+    >
       <svg
         className="w-full h-full"
         viewBox="0 0 1440 500"
