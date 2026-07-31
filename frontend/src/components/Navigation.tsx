@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useLayoutEffect } from "react";
+import { useState, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import Typewriter from "./Typewriter";
 
@@ -19,6 +19,7 @@ const socials = [
 export default function Navigation() {
   const [phase, setPhase] = useState<"hero" | "between" | "about">("hero");
   const [menuOpen, setMenuOpen] = useState(false);
+  const lastScrollY = useRef(0);
 
   useLayoutEffect(() => {
     const check = () => {
@@ -29,14 +30,22 @@ export default function Navigation() {
 
       const headerHeight = header.getBoundingClientRect().height;
       const scrollY = window.scrollY;
-      const heroBottom = hero.offsetTop + hero.offsetHeight;
       const aboutTop = about.offsetTop;
+      const scrollingUp = scrollY < lastScrollY.current;
+      lastScrollY.current = scrollY;
 
-      if (scrollY < heroBottom - headerHeight * 2) {
+      const atHeroTop = scrollY < headerHeight;
+      const atAbout = aboutTop - scrollY <= headerHeight;
+
+      if (atHeroTop) {
         setPhase("hero");
-      } else if (aboutTop - scrollY <= headerHeight) {
+      } else if (atAbout) {
         setPhase("about");
+      } else if (scrollingUp) {
+        // Hide fixed navbar while scrolling back up to the hero
+        setPhase("between");
       } else {
+        // Keep hidden while scrolling down until About is reached
         setPhase("between");
       }
     };
@@ -58,10 +67,10 @@ export default function Navigation() {
   return (
     <>
       <header
-        className={`left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-transform duration-300 ease-out ${
+        className={`left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-all duration-500 ease-out ${
           isHero ? "absolute top-0" : "fixed top-0"
         } ${
-          isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
+          isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex items-center justify-between h-full md:grid md:grid-cols-3 gap-4">
