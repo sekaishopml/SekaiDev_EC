@@ -10,7 +10,11 @@ export default function LookSection() {
           <h2 className={styles.ghostText}>LOOK</h2>
           <p className={styles.subLabel}>BEYOND LIMITS.</p>
         </div>
-        <div className={styles.mediaBox} data-placeholder="cytaxi-preview" />
+        {/* Transparent placeholder — the fixed bonsai overlays this area */}
+        <div
+          className={`${styles.mediaBox} ${styles.mediaBoxPlaceholder}`}
+          data-placeholder="cytaxi-preview"
+        />
       </div>
 
       <div className={styles.rowMiddle}>

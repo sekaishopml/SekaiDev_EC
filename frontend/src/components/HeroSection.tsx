@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { View } from "@react-three/drei";
@@ -20,9 +20,11 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const rightFrameRef = useRef<HTMLDivElement>(null);
+  const bonsaiWrapRef = useRef<HTMLDivElement>(null);
   const leftFrameRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const arcRef = useRef<HTMLDivElement>(null);
+  const [bonsaiVisible, setBonsaiVisible] = useState(true);
   const trackMetricsRef = useRef<TrackMetrics>({
     width: typeof window !== "undefined" ? window.innerWidth : 1,
     height: typeof window !== "undefined" ? window.innerHeight : 1,
@@ -57,11 +59,15 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
 
     const viewTarget = isMobile
       ? { x: "10vw", y: "14vh", scaleX: 0.8, scaleY: 0.45 }
-      : { x: "58vw", y: "12vh", scaleX: 0.32, scaleY: 0.42 };
+      : { x: "58vw", y: "10vh", scaleX: 0.32, scaleY: 0.38 };
 
     const leftTarget = isMobile
       ? { top: "14vh", left: "5%", width: "80vw", height: "30vh" }
-      : { top: "12vh", left: "5%", width: "46vw", height: "42vh" };
+      : { top: "10vh", left: "5%", width: "46vw", height: "42vh" };
+
+    let heroActive = true;
+    let lookActive = false;
+    const updateBonsaiVisibility = () => setBonsaiVisible(heroActive || lookActive);
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -149,6 +155,28 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         { opacity: 0.25, ease: "none" },
         0
       );
+
+      // Keep the fixed bonsai visible during the hero and the Look section,
+      // hide it once the Look section leaves the viewport.
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: (self) => {
+          heroActive = self.isActive;
+          updateBonsaiVisibility();
+        },
+      });
+
+      ScrollTrigger.create({
+        trigger: "#look",
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: (self) => {
+          lookActive = self.isActive;
+          updateBonsaiVisibility();
+        },
+      });
     }, section);
 
     // Ensure the initial metrics match the full-screen state.
@@ -160,6 +188,33 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   return (
     <>
       <BonsaiCanvas />
+      <div
+        ref={bonsaiWrapRef}
+        className="fixed inset-0 z-[10] pointer-events-none"
+        style={{ opacity: bonsaiVisible ? 1 : 0 }}
+      >
+        {/* Black backing rectangle for the bonsai (seen through transparent canvas) */}
+        <div
+          ref={rightFrameRef}
+          className="absolute inset-0 z-[3] bg-black opacity-0"
+          style={{ pointerEvents: "none" }}
+        />
+
+        {/* View track: the visible rectangle the bonsai is rendered into */}
+        <View
+          ref={viewRef}
+          className="absolute inset-0 z-[10] pointer-events-none"
+          visible={bonsaiVisible}
+        >
+          <Suspense fallback={null}>
+            <BonsaiScene
+              onLoaded={onBonsaiLoaded}
+              trackRef={trackMetricsRef}
+            />
+          </Suspense>
+        </View>
+      </div>
+
       <section
         ref={heroRef}
         id="home"
@@ -213,33 +268,13 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           ref={leftFrameRef}
           className="absolute z-[2] border border-foreground/20 bg-background/60 opacity-0 invisible"
           style={{
-            top: "12.5%",
+            top: "10vh",
             left: "5%",
-            width: "42vw",
-            height: "75vh",
+            width: "46vw",
+            height: "42vh",
             borderRadius: "4px",
           }}
         />
-
-        {/* Black backing rectangle for the bonsai (seen through transparent canvas) */}
-        <div
-          ref={rightFrameRef}
-          className="absolute inset-0 z-[3] bg-black opacity-0"
-          style={{ pointerEvents: "none" }}
-        />
-
-        {/* View track: the visible rectangle the bonsai is rendered into */}
-        <View
-          ref={viewRef}
-          className="absolute inset-0 z-[10] pointer-events-none"
-        >
-          <Suspense fallback={null}>
-            <BonsaiScene
-              onLoaded={onBonsaiLoaded}
-              trackRef={trackMetricsRef}
-            />
-          </Suspense>
-        </View>
       </section>
     </>
   );
