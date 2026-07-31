@@ -10,73 +10,84 @@ interface HeroSectionProps {
   onBonsaiLoaded?: () => void;
 }
 
-const messages = [
-  { text: "E-COMMERCE", side: "left" as const },
-  { text: "CRM DASHBOARD", side: "left" as const },
-  { text: "LANDING PAGES", side: "right" as const },
-  { text: "APP SOFTWARE", side: "right" as const },
-];
-
 export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const bonsaiFrameRef = useRef<HTMLDivElement>(null);
+  const leftFrameRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
   const arcRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const section = heroRef.current;
-    const frame = bonsaiFrameRef.current;
+    const bonsaiFrame = bonsaiFrameRef.current;
+    const leftFrame = leftFrameRef.current;
     const title = titleRef.current;
     const labels = labelsRef.current;
-    const cards = cardsRef.current;
     const arc = arcRef.current;
-    if (!section || !frame || !title || !labels || !cards || !arc) return;
+    if (!section || !bonsaiFrame || !leftFrame || !title || !labels || !arc) return;
 
     const w = window.innerWidth;
     const isMobile = w < 768;
-    const isTablet = w < 1024;
 
-    const frameTarget = isMobile
-      ? { width: "85vw", height: "55vh", top: "15%", left: "50%", xPercent: -50, borderRadius: "4px" }
-      : isTablet
-      ? { width: "360px", height: "480px", top: "18%", left: "55%", xPercent: 0, borderRadius: "4px" }
-      : { width: "480px", height: "600px", top: "18%", left: "55%", xPercent: 0, borderRadius: "4px" };
+    const bonsaiTarget = isMobile
+      ? { top: "12%", right: "5%", width: "90vw", height: "55vh", borderRadius: "4px" }
+      : { top: "12.5%", right: "5%", width: "42vw", height: "75vh", borderRadius: "4px" };
+
+    const leftTarget = isMobile
+      ? { top: "10%", left: "5%", width: "90vw", height: "36vh", borderRadius: "4px" }
+      : { top: "12.5%", left: "5%", width: "42vw", height: "75vh", borderRadius: "4px" };
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=120%",
+          end: "+=100%",
           pin: true,
-          scrub: 1,
+          scrub: true,
           anticipatePin: 1,
+          snap: {
+            snapTo: (value: number) => (value < 0.5 ? 0 : 1),
+            duration: { min: 0.15, max: 0.35 },
+            delay: 0,
+            ease: "power2.inOut",
+          },
         },
       });
 
-      // 1. Bonsai frame shrinks from full-screen to a fixed rectangle
+      // Bonsai frame shrinks to the right rectangle
       tl.fromTo(
-        frame,
+        bonsaiFrame,
         {
+          top: "0%",
+          right: "0%",
           width: "100%",
           height: "100%",
-          top: "0%",
-          left: "0%",
-          xPercent: 0,
           borderRadius: "0px",
         },
         {
-          ...frameTarget,
+          ...bonsaiTarget,
           ease: "power2.inOut",
         },
         0
       );
 
-      // 2. Hero title fades out and lifts
+      // Left empty rectangle fades/slides in (desktop only)
+      if (!isMobile) {
+        tl.fromTo(
+          leftFrame,
+          { ...leftTarget, autoAlpha: 0, x: -60, scale: 0.96 },
+          { ...leftTarget, autoAlpha: 1, x: 0, scale: 1, ease: "power2.out" },
+          0.05
+        );
+      } else {
+        gsap.set(leftFrame, { autoAlpha: 0 });
+      }
+
+      // Hero title fades out and lifts
       tl.fromTo(
         title,
         { opacity: 1, y: 0, scale: 1 },
@@ -84,7 +95,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         0
       );
 
-      // 3. Top/bottom labels fade
+      // Top/bottom labels fade
       tl.fromTo(
         labels,
         { opacity: 1, y: 0 },
@@ -92,26 +103,12 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         0
       );
 
-      // 4. Rainbow arc softens
+      // Rainbow arc softens
       tl.fromTo(
         arc,
         { opacity: 1 },
         { opacity: 0.25, ease: "power2.inOut" },
         0
-      );
-
-      // 5. Secondary cards stagger in
-      const cardEls = cards.querySelectorAll("[data-card]");
-      tl.fromTo(
-        cardEls,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.08,
-          ease: "power2.out",
-        },
-        0.25
       );
     }, section);
 
@@ -179,37 +176,25 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Secondary content cards */}
+      {/* Left empty rectangle placeholder */}
       <div
-        ref={cardsRef}
-        className="absolute inset-0 z-40 pointer-events-none"
-      >
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            data-card
-            className={`absolute hidden md:block max-w-[10rem] md:max-w-xs ${
-              msg.side === "right"
-                ? "right-[6%] md:right-[10%]"
-                : "left-[6%] md:left-[10%]"
-            }`}
-            style={{ top: `${18 + i * 16}%` }}
-          >
-            <div className="p-4 md:p-5 border border-foreground/10 bg-background/80 backdrop-blur-sm shadow-sm rounded-2xl">
-              <p className="text-sm md:text-lg font-display font-bold tracking-tighter leading-tight text-foreground">
-                {msg.text}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+        ref={leftFrameRef}
+        className="absolute z-10 border border-foreground/20 bg-background/40 backdrop-blur-sm opacity-0 invisible"
+        style={{
+          top: "12.5%",
+          left: "5%",
+          width: "42vw",
+          height: "75vh",
+          borderRadius: "4px",
+        }}
+      />
 
       {/* Bonsai frame */}
       <div
         ref={bonsaiFrameRef}
-        className="absolute top-0 left-0 w-full h-full overflow-hidden z-10 border-0"
+        className="absolute top-0 right-0 w-full h-full overflow-hidden z-10 border-0"
       >
-        <Scene3D onLoaded={onBonsaiLoaded} />
+        <Scene3D onLoaded={onBonsaiLoaded} scale={12} />
       </div>
     </section>
   );

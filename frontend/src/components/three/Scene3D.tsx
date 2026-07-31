@@ -29,6 +29,8 @@ function Bonsai({
     onLoaded?.();
   }, [onLoaded]);
 
+  const targetScaleVec = useMemo(() => new THREE.Vector3(1, 1, 1), []);
+
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
@@ -39,13 +41,13 @@ function Bonsai({
 
     // Scale the model proportionally to the canvas container width,
     // so it keeps its relative size when the parent shrinks (e.g. hero -> rectangle).
-    const factor = Math.min(size.width / viewportWidth, 1);
+    // Use sqrt so the model shrinks less aggressively in smaller frames and stays visible.
+    const ratio = size.width / viewportWidth;
+    const factor = Math.max(Math.sqrt(ratio), 0.55);
     const targetScale = baseScale * factor;
 
-    groupRef.current.scale.lerp(
-      new THREE.Vector3(targetScale, targetScale, targetScale),
-      0.3
-    );
+    targetScaleVec.set(targetScale, targetScale, targetScale);
+    groupRef.current.scale.lerp(targetScaleVec, 0.3);
     groupRef.current.rotation.y +=
       delta * BONSAI_CONFIG.animation.rotationSpeed;
   });
