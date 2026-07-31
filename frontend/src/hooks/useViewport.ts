@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useLayoutEffect, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 
 export function useViewport() {
   const [width, setWidth] = useState(1024);
