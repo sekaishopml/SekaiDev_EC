@@ -61,7 +61,7 @@ export default function Navigation() {
   return (
     <>
       <header
-        className={`left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-all duration-500 ease-out ${
+        className={`left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-opacity duration-500 ease-out ${
           isHero ? "absolute top-0" : "fixed top-0"
         } ${
           isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
