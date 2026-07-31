@@ -7,28 +7,28 @@ const projects = [
 
 export default function Works() {
   return (
-    <section id="works" className="min-h-screen px-6 md:px-12 py-16 md:py-24">
-      <div className="mb-12 md:mb-16">
+    <section id="works" className="h-full w-full px-6 md:px-12 pt-28 md:pt-32 pb-12 flex flex-col justify-center bg-background">
+      <div className="mb-6 md:mb-8">
         <span className="text-muted text-xs tracking-widest">02 — SELECTED WORKS</span>
-        <h2 className="font-display text-3xl md:text-5xl lg:text-7xl font-bold mt-4">PROJECTS</h2>
+        <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold mt-4">PROJECTS</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {projects.map((p) => (
           <div
             key={p.id}
-            className="group border border-foreground/20 p-6 md:p-8 hover:border-accent hover:bg-foreground/5 transition-all cursor-pointer"
+            className="group border border-foreground/20 p-4 md:p-6 hover:border-accent hover:bg-foreground/5 transition-all cursor-pointer"
           >
             <div className="flex justify-between items-start">
-              <span className="text-muted text-xs tracking-widest">{p.id}</span>
-              <span className="w-8 h-8 rounded-full border border-foreground/30 flex items-center justify-center group-hover:bg-accent group-hover:border-accent group-hover:text-white transition-colors">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <span className="text-muted text-[10px] md:text-xs tracking-widest">{p.id}</span>
+              <span className="w-6 h-6 md:w-8 md:h-8 rounded-full border border-foreground/30 flex items-center justify-center group-hover:bg-accent group-hover:border-accent group-hover:text-white transition-colors">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M1 13L13 1M13 1H4M13 1v9" />
                 </svg>
               </span>
             </div>
-            <h3 className="font-display text-xl md:text-2xl lg:text-3xl font-bold mt-8 md:mt-12">{p.title}</h3>
-            <p className="text-muted text-sm tracking-widest mt-4">{p.tags}</p>
+            <h3 className="font-display text-lg md:text-xl lg:text-2xl font-bold mt-4 md:mt-6">{p.title}</h3>
+            <p className="text-muted text-[10px] md:text-xs tracking-widest mt-2">{p.tags}</p>
           </div>
         ))}
       </div>

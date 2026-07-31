@@ -18,6 +18,7 @@ interface BonsaiProps {
 function Bonsai({ onLoaded, scale = BONSAI_CONFIG.bonsai.scale, position = BONSAI_CONFIG.bonsai.position }: BonsaiProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(ASSETS.model, ASSETS.dracoPath);
+  const clonedScene = useMemo(() => scene.clone(), [scene]);
 
   useEffect(() => {
     onLoaded?.();
@@ -33,7 +34,7 @@ function Bonsai({ onLoaded, scale = BONSAI_CONFIG.bonsai.scale, position = BONSA
     <group ref={groupRef} position={position}>
       <Center>
         <primitive
-          object={scene}
+          object={clonedScene}
           rotation={BONSAI_CONFIG.bonsai.rotation}
           scale={scale}
         />
@@ -44,6 +45,7 @@ function Bonsai({ onLoaded, scale = BONSAI_CONFIG.bonsai.scale, position = BONSA
 
 interface Scene3DProps {
   onLoaded?: () => void;
+  scale?: number;
 }
 
 /**
@@ -51,13 +53,15 @@ interface Scene3DProps {
  * and notifies the parent when it is ready. Scales the model and camera
  * responsively for mobile, tablet and desktop viewports.
  */
-export default function Scene3D({ onLoaded }: Scene3DProps) {
+export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
   const width = useViewport();
   const isMobile = width < 768;
   const isTablet = width < 1024;
 
+  const baseScale = scaleProp ?? BONSAI_CONFIG.bonsai.scale;
+
   const { scale, cameraConfig } = useMemo(() => {
-    const scale = isMobile ? 7 : isTablet ? 10 : BONSAI_CONFIG.bonsai.scale;
+    const scale = isMobile ? baseScale * 0.6 : isTablet ? baseScale * 0.8 : baseScale;
     const cameraY = isMobile ? 6.5 : BONSAI_CONFIG.camera.position[1];
     return {
       scale,
@@ -66,7 +70,7 @@ export default function Scene3D({ onLoaded }: Scene3DProps) {
         position: [0, cameraY, 0.2] as [number, number, number],
       },
     };
-  }, [isMobile, isTablet]);
+  }, [isMobile, isTablet, baseScale]);
 
   const { lights } = BONSAI_CONFIG;
 

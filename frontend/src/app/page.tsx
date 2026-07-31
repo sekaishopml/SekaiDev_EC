@@ -1,33 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
+import { useBonsaiLoad } from "@/hooks/useBonsaiLoad";
+import LoadingController from "@/components/loading/LoadingController";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
+import BonsaiShowcase from "@/components/BonsaiShowcase";
 import About from "@/components/About";
 import Works from "@/components/Works";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import LoadingController from "@/components/loading/LoadingController";
-import { useBonsaiLoad } from "@/hooks/useBonsaiLoad";
+import { SectionProvider } from "@/components/SectionContext";
+import SectionsWrapper from "@/components/SectionsWrapper";
 
 export default function Home() {
   const { loaded, setBonsaiLoaded, progress } = useBonsaiLoad();
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, []);
-
   return (
     <>
       <LoadingController loaded={loaded} progress={progress} />
-      <main className="relative">
+      <SectionProvider>
         <Navigation />
-        <Hero onBonsaiLoaded={() => setBonsaiLoaded(true)} />
-        <About />
-        <Works />
-        <Contact />
-        <Footer />
-      </main>
+        <SectionsWrapper>
+          <Hero onBonsaiLoaded={() => setBonsaiLoaded(true)} />
+          <BonsaiShowcase />
+          <About />
+          <Works />
+          <Contact footer={<Footer />} />
+        </SectionsWrapper>
+      </SectionProvider>
     </>
   );
 }
