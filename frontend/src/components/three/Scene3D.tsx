@@ -66,7 +66,8 @@ export function Bonsai({
     // Shift the model up as it shrinks into the top rectangle so it stays
     // anchored near the top of the frame instead of floating in the center.
     const baseZ = position[2];
-    const targetZ = baseZ - (1 - Math.min(coverFactor, 1)) * 0.55;
+    const maxRatio = Math.max(ratioW, ratioH);
+    const targetZ = baseZ - (1 - maxRatio) * 0.55;
     groupRef.current.position.z = THREE.MathUtils.lerp(
       groupRef.current.position.z,
       targetZ,
