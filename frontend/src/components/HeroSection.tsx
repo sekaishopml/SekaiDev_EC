@@ -13,6 +13,7 @@ interface HeroSectionProps {
 export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const bonsaiFrameRef = useRef<HTMLDivElement>(null);
+  const canvasWrapperRef = useRef<HTMLDivElement>(null);
   const leftFrameRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const arcRef = useRef<HTMLDivElement>(null);
@@ -22,21 +23,34 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
 
     const section = heroRef.current;
     const bonsaiFrame = bonsaiFrameRef.current;
+    const canvasWrapper = canvasWrapperRef.current;
     const leftFrame = leftFrameRef.current;
     const labels = labelsRef.current;
     const arc = arcRef.current;
-    if (!section || !bonsaiFrame || !leftFrame || !labels || !arc) return;
+    if (
+      !section ||
+      !bonsaiFrame ||
+      !canvasWrapper ||
+      !leftFrame ||
+      !labels ||
+      !arc
+    )
+      return;
 
     const w = window.innerWidth;
     const isMobile = w < 768;
 
-    const bonsaiTarget = isMobile
-      ? { top: "12%", right: "5%", width: "90vw", height: "55vh", borderRadius: "4px" }
-      : { top: "12.5%", right: "5%", width: "42vw", height: "75vh", borderRadius: "4px" };
+    const bonsaiClip = isMobile
+      ? "inset(12% 5% 33% 5% round 4px)"
+      : "inset(12.5% 5% 12.5% 53% round 4px)";
+
+    const bonsaiTransform = isMobile
+      ? { x: "0%", y: "-10.5%", scale: 0.9 }
+      : { x: "24%", y: "0%", scale: 0.75 };
 
     const leftTarget = isMobile
-      ? { top: "10%", left: "5%", width: "90vw", height: "36vh", borderRadius: "4px" }
-      : { top: "12.5%", left: "5%", width: "42vw", height: "75vh", borderRadius: "4px" };
+      ? { top: "10%", left: "5%", width: "90vw", height: "36vh" }
+      : { top: "12.5%", left: "5%", width: "42vw", height: "75vh" };
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -49,8 +63,8 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           anticipatePin: 1,
           snap: {
             snapTo: (value: number, self?: { direction?: number }) => {
-              // Only snap when the user is actively scrolling; otherwise keep current progress.
-              if (!self || self.direction === 0 || self.direction === undefined) return value;
+              if (!self || self.direction === 0 || self.direction === undefined)
+                return value;
               return self.direction < 0 ? 0 : 1;
             },
             duration: { min: 0.2, max: 0.4 },
@@ -60,20 +74,20 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         },
       });
 
-      // Bonsai frame shrinks to the right rectangle
+      // Bonsai becomes a clipped rectangle on the right.
+      // The canvas wrapper is transformed (scale/translate) and clipped by the
+      // parent frame, so the WebGL canvas never resizes during the transition.
       tl.fromTo(
         bonsaiFrame,
-        {
-          top: "0%",
-          right: "0%",
-          width: "100%",
-          height: "100%",
-          borderRadius: "0px",
-        },
-        {
-          ...bonsaiTarget,
-          ease: "power2.inOut",
-        },
+        { clipPath: "inset(0% 0% 0% 0% round 0px)" },
+        { clipPath: bonsaiClip, ease: "power2.inOut" },
+        0
+      );
+
+      tl.fromTo(
+        canvasWrapper,
+        { x: "0%", y: "0%", scale: 1, transformOrigin: "center center" },
+        { ...bonsaiTransform, transformOrigin: "center center", ease: "power2.inOut" },
         0
       );
 
@@ -83,7 +97,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           leftFrame,
           { ...leftTarget, autoAlpha: 0, x: -60, scale: 0.96 },
           { ...leftTarget, autoAlpha: 1, x: 0, scale: 1, ease: "power2.out" },
-          0.05
+          0.1
         );
       } else {
         gsap.set(leftFrame, { autoAlpha: 0 });
@@ -161,7 +175,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
       {/* Left empty rectangle placeholder */}
       <div
         ref={leftFrameRef}
-        className="absolute z-10 border border-foreground/20 bg-background/40 backdrop-blur-sm opacity-0 invisible"
+        className="absolute z-0 border border-foreground/20 bg-background/40 backdrop-blur-sm opacity-0 invisible"
         style={{
           top: "12.5%",
           left: "5%",
@@ -171,12 +185,17 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         }}
       />
 
-      {/* Bonsai frame */}
+      {/* Bonsai frame: clips the transformed, full-resolution canvas */}
       <div
         ref={bonsaiFrameRef}
-        className="absolute top-0 right-0 w-full h-full overflow-hidden z-10 border-0"
+        className="absolute inset-0 z-10"
       >
-        <Scene3D onLoaded={onBonsaiLoaded} scale={12} />
+        <div
+          ref={canvasWrapperRef}
+          className="absolute inset-0 will-change-transform"
+        >
+          <Scene3D onLoaded={onBonsaiLoaded} />
+        </div>
       </div>
     </section>
   );
