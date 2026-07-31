@@ -190,7 +190,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
       <BonsaiCanvas />
       <div
         ref={bonsaiWrapRef}
-        className="fixed inset-0 z-[10] pointer-events-none"
+        className="fixed inset-0 z-[4] pointer-events-none"
         style={{ opacity: bonsaiVisible ? 1 : 0 }}
       >
         {/* Black backing rectangle for the bonsai (seen through transparent canvas) */}
