@@ -50,8 +50,9 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           scrub: true,
           anticipatePin: 1,
           snap: {
-            snapTo: (value: number) => (value < 0.5 ? 0 : 1),
-            duration: { min: 0.15, max: 0.35 },
+            snapTo: (_value: number, self?: { direction: number }) =>
+              self && self.direction < 0 ? 0 : 1,
+            duration: { min: 0.2, max: 0.4 },
             delay: 0,
             ease: "power2.inOut",
           },
