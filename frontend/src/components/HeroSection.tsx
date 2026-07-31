@@ -14,7 +14,6 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const bonsaiFrameRef = useRef<HTMLDivElement>(null);
   const leftFrameRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const arcRef = useRef<HTMLDivElement>(null);
 
@@ -24,10 +23,9 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
     const section = heroRef.current;
     const bonsaiFrame = bonsaiFrameRef.current;
     const leftFrame = leftFrameRef.current;
-    const title = titleRef.current;
     const labels = labelsRef.current;
     const arc = arcRef.current;
-    if (!section || !bonsaiFrame || !leftFrame || !title || !labels || !arc) return;
+    if (!section || !bonsaiFrame || !leftFrame || !labels || !arc) return;
 
     const w = window.innerWidth;
     const isMobile = w < 768;
@@ -91,14 +89,6 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         gsap.set(leftFrame, { autoAlpha: 0 });
       }
 
-      // Hero title fades out and lifts
-      tl.fromTo(
-        title,
-        { opacity: 1, y: 0, scale: 1 },
-        { opacity: 0, y: -60, scale: 0.96, ease: "power2.inOut" },
-        0
-      );
-
       // Top/bottom labels fade
       tl.fromTo(
         labels,
@@ -127,18 +117,6 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
     >
       <div ref={arcRef} className="absolute inset-0 z-0 pointer-events-none">
         <RainbowArc />
-      </div>
-
-      {/* Large hero title */}
-      <div
-        ref={titleRef}
-        className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
-      >
-        <h1 className="font-display text-[14vw] md:text-[11vw] font-bold tracking-tighter text-foreground/90 leading-none select-none">
-          SEKAI
-          <br />
-          DEV
-        </h1>
       </div>
 
       {/* Top / bottom labels */}

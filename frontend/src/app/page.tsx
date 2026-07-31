@@ -3,6 +3,7 @@
 import { useBonsaiLoad } from "@/hooks/useBonsaiLoad";
 import LoadingController from "@/components/loading/LoadingController";
 import Navigation from "@/components/Navigation";
+import SmoothScroll from "@/components/SmoothScroll";
 import HeroSection from "@/components/HeroSection";
 import About from "@/components/About";
 import Works from "@/components/Works";
@@ -16,12 +17,14 @@ export default function Home() {
     <>
       <LoadingController loaded={loaded} progress={progress} />
       <Navigation />
-      <main className="relative">
-        <HeroSection onBonsaiLoaded={() => setBonsaiLoaded(true)} />
-        <About />
-        <Works />
-        <Contact footer={<Footer />} />
-      </main>
+      <SmoothScroll>
+        <main className="relative">
+          <HeroSection onBonsaiLoaded={() => setBonsaiLoaded(true)} />
+          <About />
+          <Works />
+          <Contact footer={<Footer />} />
+        </main>
+      </SmoothScroll>
     </>
   );
 }
