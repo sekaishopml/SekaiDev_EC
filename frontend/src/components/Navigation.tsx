@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Typewriter from "./Typewriter";
 
@@ -15,13 +16,33 @@ const socials = [
   { label: "BEHANCE", href: "#" },
 ];
 
-/**
- * Fixed header. Its explicit height (h-20 / md:h-24) is consumed by Hero
- * so the 3D scene can start exactly below it.
- */
 export default function Navigation() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const check = () => {
+      const about = document.getElementById("about");
+      const header = document.querySelector("header");
+      if (!about || !header) return;
+      const headerHeight = header.getBoundingClientRect().height;
+      setVisible(about.getBoundingClientRect().top <= headerHeight);
+    };
+
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-transform duration-300 ease-out ${
+        visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
+      }`}
+    >
       <div className="grid grid-cols-3 items-center h-full gap-4">
         <Link href="#home" className="font-display text-2xl md:text-3xl font-bold leading-none tracking-tighter text-foreground whitespace-nowrap">
           SEKAI<br />DEV <Typewriter />

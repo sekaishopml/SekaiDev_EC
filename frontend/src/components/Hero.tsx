@@ -5,7 +5,7 @@ interface HeroProps {
 }
 
 const TopLabels = () => (
-  <div className="absolute top-24 md:top-28 left-6 right-6 z-10 grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] md:text-xs tracking-widest text-muted/90 uppercase pointer-events-none drop-shadow-sm">
+  <div className="absolute top-6 md:top-8 left-6 right-6 z-10 grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] md:text-xs tracking-widest text-muted/90 uppercase pointer-events-none drop-shadow-sm">
     <div className="flex flex-col gap-1">
       <span>Software Studio</span>
       <span>Dev 01</span>
@@ -37,10 +37,10 @@ const BottomLabels = () => (
 
 export default function Hero({ onBonsaiLoaded }: HeroProps) {
   return (
-    <section id="home" className="relative h-screen pt-20 md:pt-24 overflow-hidden">
+    <section id="home" className="relative h-screen overflow-hidden">
       <TopLabels />
 
-      <div className="absolute inset-x-0 top-20 md:top-24 bottom-0 z-0">
+      <div className="absolute inset-0 z-0">
         <Scene3D onLoaded={onBonsaiLoaded} />
       </div>
 
