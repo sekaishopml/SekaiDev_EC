@@ -16,15 +16,15 @@ export const BONSAI_CONFIG = {
 
   // Main model transform
   bonsai: {
-    // Lowered slightly to avoid top cutoff while keeping scale 12
-    position: [0, -0.6, 0.15] as [number, number, number],
+    // Centered in the framed hero
+    position: [0, -0.6, 0.2] as [number, number, number],
 
     // Starting rotation in radians (x, y, z)
     // Y rotation so the flowers face the camera
     rotation: [0, Math.PI, 0] as [number, number, number],
 
-    // Scale requested by client
-    scale: 12,
+    // Reduced slightly to fit the rectangular frame
+    scale: 9,
   },
 
   // Auto-rotation
