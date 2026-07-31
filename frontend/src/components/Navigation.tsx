@@ -17,7 +17,7 @@ const socials = [
 ];
 
 export default function Navigation() {
-  const [visible, setVisible] = useState(true);
+  const [phase, setPhase] = useState<"hero" | "between" | "about">("hero");
   const [menuOpen, setMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
@@ -32,10 +32,13 @@ export default function Navigation() {
       const heroBottom = hero.offsetTop + hero.offsetHeight;
       const aboutTop = about.offsetTop;
 
-      const inHero = scrollY < heroBottom - headerHeight * 2;
-      const atAbout = aboutTop - scrollY <= headerHeight;
-
-      setVisible(inHero || atAbout);
+      if (scrollY < heroBottom - headerHeight * 2) {
+        setPhase("hero");
+      } else if (aboutTop - scrollY <= headerHeight) {
+        setPhase("about");
+      } else {
+        setPhase("between");
+      }
     };
 
     check();
@@ -49,11 +52,16 @@ export default function Navigation() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  const isHero = phase === "hero";
+  const isVisible = phase === "hero" || phase === "about";
+
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-transform duration-300 ease-out ${
-          visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
+        className={`left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-transform duration-300 ease-out ${
+          isHero ? "absolute top-0" : "fixed top-0"
+        } ${
+          isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex items-center justify-between h-full md:grid md:grid-cols-3 gap-4">
