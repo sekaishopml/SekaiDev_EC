@@ -70,7 +70,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           start: "top top",
           end: "+=70%",
           pin: true,
-          scrub: 0.5,
+          scrub: true,
           anticipatePin: 1,
         },
       });
