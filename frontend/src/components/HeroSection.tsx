@@ -28,7 +28,11 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const heroActiveRef = useRef(true);
   const lookActiveRef = useRef(false);
   const updateBonsaiVisibility = useCallback(
-    () => setBonsaiVisible(heroActiveRef.current || lookActiveRef.current),
+    () => {
+      const v = heroActiveRef.current || lookActiveRef.current;
+      console.log('[bonsai] visibility update', { hero: heroActiveRef.current, look: lookActiveRef.current, visible: v });
+      setBonsaiVisible(v);
+    },
     []
   );
   const trackMetricsRef = useRef<TrackMetrics>({
@@ -189,15 +193,17 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
 
       const st = ScrollTrigger.create({
         trigger: lookEl,
-        start: "top 20%",
-        end: () => `+=${window.innerHeight * 0.9}`,
+        start: "top 80%",
+        end: () => `+=${window.innerHeight * 1.8}`,
         onToggle: (self) => {
+          console.log('[bonsai] look toggle', self.isActive, 'scroll', window.scrollY, 'start', st.start, 'end', st.end);
           lookActiveRef.current = self.isActive;
           updateBonsaiVisibility();
         },
       });
 
       ScrollTrigger.refresh();
+      console.log('[bonsai] look trigger created', st.start, st.end, st.isActive, 'scroll', window.scrollY);
 
       return () => st.kill();
     };
