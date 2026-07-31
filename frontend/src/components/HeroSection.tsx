@@ -50,8 +50,11 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
           scrub: true,
           anticipatePin: 1,
           snap: {
-            snapTo: (_value: number, self?: { direction: number }) =>
-              self && self.direction < 0 ? 0 : 1,
+            snapTo: (value: number, self?: { direction?: number }) => {
+              // Only snap when the user is actively scrolling; otherwise keep current progress.
+              if (!self || self.direction === 0 || self.direction === undefined) return value;
+              return self.direction < 0 ? 0 : 1;
+            },
             duration: { min: 0.2, max: 0.4 },
             delay: 0,
             ease: "power2.inOut",
