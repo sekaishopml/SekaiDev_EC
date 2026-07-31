@@ -2,7 +2,6 @@
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Scene3D from "@/components/three/Scene3D";
 import RainbowArc from "./RainbowArc";
 
