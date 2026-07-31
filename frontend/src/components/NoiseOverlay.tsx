@@ -66,5 +66,5 @@ export default function NoiseOverlay() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="noise-overlay" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="noise-overlay z-40" aria-hidden="true" />;
 }

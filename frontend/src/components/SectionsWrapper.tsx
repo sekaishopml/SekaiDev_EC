@@ -150,16 +150,16 @@ export default function SectionsWrapper({ children }: SectionsWrapperProps) {
 function DotNav({ total, goTo }: { total: number; goTo: (i: number) => void }) {
   const { current } = useSections();
   return (
-    <div className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
+    <div className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
       {Array.from({ length: total }).map((_, i) => (
         <button
           key={i}
           onClick={() => goTo(i)}
           aria-label={`Go to section ${i + 1}`}
-          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+          className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
             i === current
-              ? "bg-foreground scale-150"
-              : "bg-foreground/30 hover:bg-foreground/60"
+              ? "bg-foreground scale-125"
+              : "bg-foreground/50 hover:bg-foreground"
           }`}
         />
       ))}
