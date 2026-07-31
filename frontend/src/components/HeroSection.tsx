@@ -170,7 +170,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
 
       ScrollTrigger.create({
         trigger: "#look",
-        start: "top bottom",
+        start: "top 80%",
         end: "bottom top",
         onToggle: (self) => {
           lookActive = self.isActive;
