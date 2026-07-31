@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useLayoutEffect } from "react";
+import { useRef, useEffect, useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import Typewriter from "./Typewriter";
 
@@ -17,55 +17,77 @@ const socials = [
 ];
 
 export default function Navigation() {
-  const [phase, setPhase] = useState<"hero" | "between" | "about">("hero");
+  const headerRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
-    const check = () => {
-      const hero = document.getElementById("home");
-      const about = document.getElementById("about");
-      const header = document.querySelector("header");
-      if (!hero || !about || !header) return;
+    updateHeader();
+  }, []);
 
-      const headerHeight = header.getBoundingClientRect().height;
-      const scrollY = window.scrollY;
-      const heroBottom = hero.offsetTop + hero.offsetHeight;
-      const aboutTop = about.offsetTop;
+  useEffect(() => {
+    let ticking = false;
 
-      const inHero = scrollY < heroBottom - headerHeight * 2;
-      const atAbout = aboutTop - scrollY <= headerHeight;
-
-      if (inHero) {
-        setPhase("hero");
-      } else if (atAbout) {
-        setPhase("about");
-      } else {
-        setPhase("between");
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateHeader();
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    check();
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateHeader);
+    onScroll();
+
     return () => {
-      window.removeEventListener("scroll", check);
-      window.removeEventListener("resize", check);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updateHeader);
     };
   }, []);
 
-  const closeMenu = () => setMenuOpen(false);
+  const updateHeader = () => {
+    const header = headerRef.current;
+    const hero = document.getElementById("home");
+    const about = document.getElementById("about");
+    if (!header || !hero || !about) return;
 
-  const isHero = phase === "hero";
-  const isVisible = phase === "hero" || phase === "about";
+    const headerHeight = header.getBoundingClientRect().height;
+    const scrollY = window.scrollY;
+    const heroBottom = hero.offsetTop + hero.offsetHeight;
+    const aboutTop = about.offsetTop;
+
+    const inHero = scrollY < heroBottom - headerHeight * 2;
+    const atAbout = aboutTop - scrollY <= headerHeight;
+
+    // Follow the hero scroll exactly (no transition) to feel static.
+    // Hide / reappear with transform and opacity for smoothness.
+    if (inHero) {
+      header.style.transition = "none";
+      header.style.transform = `translateY(-${scrollY}px)`;
+      header.style.opacity = "1";
+      header.style.pointerEvents = "auto";
+    } else if (atAbout) {
+      header.style.transition = "opacity 500ms ease-out, transform 500ms ease-out";
+      header.style.transform = "translateY(0)";
+      header.style.opacity = "1";
+      header.style.pointerEvents = "auto";
+    } else {
+      header.style.transition = "opacity 500ms ease-out, transform 500ms ease-out";
+      header.style.transform = "translateY(-100%)";
+      header.style.opacity = "0";
+      header.style.pointerEvents = "none";
+    }
+  };
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
       <header
-        className={`left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background transition-opacity duration-500 ease-out ${
-          isHero ? "absolute top-0" : "fixed top-0"
-        } ${
-          isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        ref={headerRef}
+        className="fixed top-0 left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background"
       >
         <div className="flex items-center justify-between h-full md:grid md:grid-cols-3 gap-4">
           <Link
