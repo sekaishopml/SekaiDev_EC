@@ -7,17 +7,17 @@ const projects = [
 
 export default function Works() {
   return (
-    <section id="works" className="min-h-screen px-6 md:px-12 py-24">
-      <div className="mb-16">
+    <section id="works" className="min-h-screen px-6 md:px-12 py-16 md:py-24">
+      <div className="mb-12 md:mb-16">
         <span className="text-muted text-xs tracking-widest">02 — SELECTED WORKS</span>
-        <h2 className="font-display text-5xl md:text-7xl font-bold mt-4">PROJECTS</h2>
+        <h2 className="font-display text-3xl md:text-5xl lg:text-7xl font-bold mt-4">PROJECTS</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         {projects.map((p) => (
           <div
             key={p.id}
-            className="group border border-foreground/20 p-8 hover:border-accent hover:bg-foreground/5 transition-all cursor-pointer"
+            className="group border border-foreground/20 p-6 md:p-8 hover:border-accent hover:bg-foreground/5 transition-all cursor-pointer"
           >
             <div className="flex justify-between items-start">
               <span className="text-muted text-xs tracking-widest">{p.id}</span>
@@ -27,7 +27,7 @@ export default function Works() {
                 </svg>
               </span>
             </div>
-            <h3 className="font-display text-2xl md:text-3xl font-bold mt-12">{p.title}</h3>
+            <h3 className="font-display text-xl md:text-2xl lg:text-3xl font-bold mt-8 md:mt-12">{p.title}</h3>
             <p className="text-muted text-sm tracking-widest mt-4">{p.tags}</p>
           </div>
         ))}

@@ -5,19 +5,25 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { BONSAI_CONFIG } from "@/lib/bonsai.config";
 
-export default function CameraController() {
+type CameraConfig = typeof BONSAI_CONFIG.camera;
+
+interface CameraControllerProps {
+  cameraConfig?: CameraConfig;
+}
+
+export default function CameraController({ cameraConfig }: CameraControllerProps) {
   const { camera } = useThree();
 
   useEffect(() => {
-    const { position, target, up } = BONSAI_CONFIG.camera;
-    camera.position.set(...position);
-    if (up) {
-      camera.up.set(...up);
+    const config = cameraConfig ?? BONSAI_CONFIG.camera;
+    camera.position.set(...config.position);
+    if (config.up) {
+      camera.up.set(...config.up);
     }
-    if (target) {
-      camera.lookAt(new THREE.Vector3(...target));
+    if (config.target) {
+      camera.lookAt(new THREE.Vector3(...config.target));
     }
-  }, [camera]);
+  }, [camera, cameraConfig]);
 
   return null;
 }

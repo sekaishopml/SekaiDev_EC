@@ -1,18 +1,21 @@
 "use client";
 
-import { Suspense, useRef, useEffect } from "react";
+import { Suspense, useRef, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 import { ASSETS } from "@/lib/constants";
 import { BONSAI_CONFIG } from "@/lib/bonsai.config";
+import { useViewport } from "@/hooks/useViewport";
 import CameraController from "./CameraController";
 
 interface BonsaiProps {
   onLoaded?: () => void;
+  scale?: number;
+  position?: [number, number, number];
 }
 
-function Bonsai({ onLoaded }: BonsaiProps) {
+function Bonsai({ onLoaded, scale = BONSAI_CONFIG.bonsai.scale, position = BONSAI_CONFIG.bonsai.position }: BonsaiProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(ASSETS.model, ASSETS.dracoPath);
 
@@ -27,12 +30,12 @@ function Bonsai({ onLoaded }: BonsaiProps) {
   });
 
   return (
-    <group ref={groupRef} position={BONSAI_CONFIG.bonsai.position}>
+    <group ref={groupRef} position={position}>
       <Center>
         <primitive
           object={scene}
           rotation={BONSAI_CONFIG.bonsai.rotation}
-          scale={BONSAI_CONFIG.bonsai.scale}
+          scale={scale}
         />
       </Center>
     </group>
@@ -45,25 +48,42 @@ interface Scene3DProps {
 
 /**
  * 3D canvas for the sakura bonsai. Loads the compressed GLB with Draco
- * and notifies the parent when it is ready.
+ * and notifies the parent when it is ready. Scales the model and camera
+ * responsively for mobile, tablet and desktop viewports.
  */
 export default function Scene3D({ onLoaded }: Scene3DProps) {
-  const { camera, lights } = BONSAI_CONFIG;
+  const width = useViewport();
+  const isMobile = width < 768;
+  const isTablet = width < 1024;
+
+  const { scale, cameraConfig } = useMemo(() => {
+    const scale = isMobile ? 7 : isTablet ? 10 : BONSAI_CONFIG.bonsai.scale;
+    const cameraY = isMobile ? 6.5 : BONSAI_CONFIG.camera.position[1];
+    return {
+      scale,
+      cameraConfig: {
+        ...BONSAI_CONFIG.camera,
+        position: [0, cameraY, 0.2] as [number, number, number],
+      },
+    };
+  }, [isMobile, isTablet]);
+
+  const { lights } = BONSAI_CONFIG;
 
   return (
     <div className="relative w-full h-full">
       <Canvas
         camera={{
-          position: camera.position,
-          fov: camera.fov,
-          near: camera.near,
-          far: camera.far,
+          position: cameraConfig.position,
+          fov: cameraConfig.fov,
+          near: cameraConfig.near,
+          far: cameraConfig.far,
         }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
-        <CameraController />
+        <CameraController cameraConfig={cameraConfig} />
         <ambientLight intensity={lights.ambient.intensity} />
         {lights.directional.map((light, index) => (
           <directionalLight key={index} position={light.position} intensity={light.intensity} />
@@ -72,7 +92,7 @@ export default function Scene3D({ onLoaded }: Scene3DProps) {
           <pointLight key={index} position={light.position} intensity={light.intensity} />
         ))}
         <Suspense fallback={null}>
-          <Bonsai onLoaded={onLoaded} />
+          <Bonsai onLoaded={onLoaded} scale={scale} />
         </Suspense>
       </Canvas>
     </div>

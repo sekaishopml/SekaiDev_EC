@@ -19,7 +19,7 @@ const TopLabels = () => (
 );
 
 const BottomLabels = () => (
-  <div className="absolute bottom-8 left-6 right-6 z-10 grid grid-cols-2 gap-4 items-end pointer-events-none">
+  <div className="absolute bottom-4 md:bottom-8 left-6 right-6 z-10 grid grid-cols-2 gap-4 items-end pointer-events-none">
     <p className="text-xs md:text-sm tracking-widest uppercase text-foreground/80 max-w-md drop-shadow-sm">
       Building scalable products / helping brands stand out
     </p>
