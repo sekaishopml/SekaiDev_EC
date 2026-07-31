@@ -1,4 +1,5 @@
 import Scene3D from "@/components/three/Scene3D";
+import RainbowArc from "./RainbowArc";
 
 interface HeroProps {
   onBonsaiLoaded?: () => void;
@@ -38,6 +39,7 @@ const BottomLabels = () => (
 export default function Hero({ onBonsaiLoaded }: HeroProps) {
   return (
     <section id="home" className="relative h-screen pt-20 md:pt-24 overflow-hidden">
+      <RainbowArc />
       <TopLabels />
 
       <div className="absolute inset-x-0 top-20 md:top-24 bottom-0 z-0">
