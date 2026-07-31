@@ -1,10 +1,10 @@
 export default function RainbowArc() {
   return (
     <div
-      className="absolute top-0 left-0 w-full h-[50vh] z-[-1] pointer-events-none overflow-hidden"
+      className="absolute top-0 left-0 w-full h-[60vh] z-[-1] pointer-events-none overflow-hidden"
       style={{
-        maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 85%)",
-        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 85%)",
+        maskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 90%)",
+        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 90%)",
       }}
     >
       <svg
@@ -24,20 +24,20 @@ export default function RainbowArc() {
             <stop offset="100%" stopColor="#22d3ee" />
           </linearGradient>
           <filter id="arcBlur" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="45" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="90" />
           </filter>
         </defs>
         <path
-          d="M -120 420 Q 720 -120 1560 420"
+          d="M -200 480 Q 720 -160 1640 480"
           fill="none"
           stroke="url(#rainbow)"
-          strokeWidth="180"
+          strokeWidth="260"
           strokeLinecap="round"
           filter="url(#arcBlur)"
-          opacity="0.85"
+          opacity="1"
         />
       </svg>
-      <div className="frame-grain absolute inset-0 opacity-30 mix-blend-overlay" aria-hidden="true" />
+      <div className="frame-grain absolute inset-0 opacity-40 mix-blend-overlay" aria-hidden="true" />
     </div>
   );
 }
