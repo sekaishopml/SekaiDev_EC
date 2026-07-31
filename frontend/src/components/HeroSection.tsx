@@ -180,20 +180,31 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   // Create the Look-section visibility trigger after the Look section has
   // mounted in the DOM (it's a sibling rendered after HeroSection).
   useEffect(() => {
-    const lookEl = document.querySelector<HTMLElement>("#look");
-    if (!lookEl) return;
+    const createLookTrigger = () => {
+      const lookEl = document.querySelector<HTMLElement>("#look");
+      if (!lookEl) {
+        // Retry once on next frame if the DOM hasn't rendered yet.
+        requestAnimationFrame(createLookTrigger);
+        return;
+      }
 
-    const st = ScrollTrigger.create({
-      trigger: lookEl,
-      start: "top 20%",
-      end: "+=90vh",
-      onToggle: (self) => {
-        lookActiveRef.current = self.isActive;
-        updateBonsaiVisibility();
-      },
-    });
+      const st = ScrollTrigger.create({
+        trigger: lookEl,
+        start: "top 20%",
+        end: "+=90vh",
+        onToggle: (self) => {
+          lookActiveRef.current = self.isActive;
+          updateBonsaiVisibility();
+        },
+      });
 
-    return () => st.kill();
+      ScrollTrigger.refresh();
+
+      return () => st.kill();
+    };
+
+    const cleanup = createLookTrigger();
+    return cleanup;
   }, [updateBonsaiVisibility]);
 
   return (
