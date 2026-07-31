@@ -80,10 +80,16 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=70%",
+          end: "+=40%",
           pin: true,
           scrub: true,
           anticipatePin: 1,
+          snap: {
+            snapTo: (progress: number) => (progress < 0.25 ? 0 : 1),
+            duration: { min: 0.4, max: 0.9 },
+            delay: 0,
+            ease: "power2.inOut",
+          },
         },
       });
 
@@ -194,7 +200,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
       const st = ScrollTrigger.create({
         trigger: lookEl,
         start: "top 80%",
-        end: () => `+=${window.innerHeight * 1.8}`,
+        end: () => `+=${window.innerHeight * 1.04}`,
         onToggle: (self) => {
           console.log('[bonsai] look toggle', self.isActive, 'scroll', window.scrollY, 'start', st.start, 'end', st.end);
           lookActiveRef.current = self.isActive;
