@@ -38,11 +38,11 @@ const BottomLabels = () => (
 
 export default function Hero({ onBonsaiLoaded }: HeroProps) {
   return (
-    <section id="home" className="relative h-screen pt-20 md:pt-24 overflow-hidden">
+    <section id="home" className="relative h-screen overflow-hidden">
       <RainbowArc />
       <TopLabels />
 
-      <div className="absolute inset-x-0 top-20 md:top-24 bottom-0 z-0">
+      <div className="absolute inset-0 z-0">
         <Scene3D onLoaded={onBonsaiLoaded} />
       </div>
 
