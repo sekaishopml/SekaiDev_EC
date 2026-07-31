@@ -28,11 +28,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const heroActiveRef = useRef(true);
   const lookActiveRef = useRef(false);
   const updateBonsaiVisibility = useCallback(
-    () => {
-      const v = heroActiveRef.current || lookActiveRef.current;
-      console.log('[bonsai] visibility update', { hero: heroActiveRef.current, look: lookActiveRef.current, visible: v });
-      setBonsaiVisible(v);
-    },
+    () => setBonsaiVisible(heroActiveRef.current || lookActiveRef.current),
     []
   );
   const trackMetricsRef = useRef<TrackMetrics>({
@@ -202,14 +198,12 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         start: "top 80%",
         end: () => `+=${window.innerHeight * 1.04}`,
         onToggle: (self) => {
-          console.log('[bonsai] look toggle', self.isActive, 'scroll', window.scrollY, 'start', st.start, 'end', st.end);
           lookActiveRef.current = self.isActive;
           updateBonsaiVisibility();
         },
       });
 
       ScrollTrigger.refresh();
-      console.log('[bonsai] look trigger created', st.start, st.end, st.isActive, 'scroll', window.scrollY);
 
       return () => st.kill();
     };
@@ -299,7 +293,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         {/* Left empty rectangle placeholder */}
         <div
           ref={leftFrameRef}
-          className="absolute z-[2] border border-foreground/20 bg-background/60 opacity-0 invisible"
+          className="absolute z-[2] bg-black opacity-0 invisible"
           style={{
             top: "10vh",
             left: "5%",
