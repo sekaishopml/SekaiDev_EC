@@ -19,6 +19,7 @@ interface HeroSectionProps {
 export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
+  const rightFrameRef = useRef<HTMLDivElement>(null);
   const leftFrameRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const arcRef = useRef<HTMLDivElement>(null);
@@ -34,10 +35,11 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
 
     const section = heroRef.current;
     const viewEl = viewRef.current;
+    const rightFrame = rightFrameRef.current;
     const leftFrame = leftFrameRef.current;
     const labels = labelsRef.current;
     const arc = arcRef.current;
-    if (!section || !viewEl || !leftFrame || !labels || !arc) return;
+    if (!section || !viewEl || !rightFrame || !leftFrame || !labels || !arc) return;
 
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -99,6 +101,28 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         {
           ...viewTarget,
           borderRadius: "4px",
+          transformOrigin: "top left",
+          ease: "power2.inOut",
+        },
+        0
+      );
+
+      // Black backing rectangle behind the bonsai follows the same track.
+      tl.fromTo(
+        rightFrame,
+        {
+          x: "0vw",
+          y: "0vh",
+          scaleX: 1,
+          scaleY: 1,
+          borderRadius: "0px",
+          opacity: 0,
+          transformOrigin: "top left",
+        },
+        {
+          ...viewTarget,
+          borderRadius: "4px",
+          opacity: 1,
           transformOrigin: "top left",
           ease: "power2.inOut",
         },
@@ -205,6 +229,12 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
             height: "75vh",
             borderRadius: "4px",
           }}
+        />
+
+        {/* Black backing rectangle for the bonsai (seen through transparent canvas) */}
+        <div
+          ref={rightFrameRef}
+          className="absolute inset-0 z-[3] bg-black opacity-0 pointer-events-none"
         />
 
         {/* View track: the visible rectangle the bonsai is rendered into */}

@@ -13,10 +13,7 @@ export default function NoiseOverlay() {
     if (!ctx) return;
 
     const patternSize = 200;
-    const patternScaleX = 1;
-    const patternScaleY = 1;
-    const patternRefreshInterval = 3;
-    const patternAlpha = 18;
+    const patternAlpha = 14;
 
     const patternCanvas = document.createElement("canvas");
     patternCanvas.width = patternSize;
@@ -28,42 +25,29 @@ export default function NoiseOverlay() {
     const data = imageData.data;
     const pixelCount = patternSize * patternSize * 4;
 
-    let frame = 0;
-    let rafId: number;
-
-    const resize = () => {
-      canvas.width = window.innerWidth * window.devicePixelRatio;
-      canvas.height = window.innerHeight * window.devicePixelRatio;
-      ctx.scale(patternScaleX, patternScaleY);
-    };
-
     const draw = () => {
-      if (frame % patternRefreshInterval === 0) {
-        for (let i = 0; i < pixelCount; i += 4) {
-          const v = 255 * Math.random();
-          data[i] = v;
-          data[i + 1] = v;
-          data[i + 2] = v;
-          data[i + 3] = patternAlpha;
-        }
-        patternCtx.putImageData(imageData, 0, 0);
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = ctx.createPattern(patternCanvas, "repeat") as CanvasPattern;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < pixelCount; i += 4) {
+        const v = 255 * Math.random();
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = patternAlpha;
       }
-      frame++;
-      rafId = window.requestAnimationFrame(draw);
+      patternCtx.putImageData(imageData, 0, 0);
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = ctx.createPattern(patternCanvas, "repeat") as CanvasPattern;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
-    window.addEventListener("resize", resize);
-    resize();
     draw();
-
-    return () => {
-      window.removeEventListener("resize", resize);
-      window.cancelAnimationFrame(rafId);
-    };
+    window.addEventListener("resize", draw);
+    return () => window.removeEventListener("resize", draw);
   }, []);
 
   return <canvas ref={canvasRef} className="noise-overlay z-40" aria-hidden="true" />;
