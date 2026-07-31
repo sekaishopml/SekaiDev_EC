@@ -67,16 +67,19 @@ export default function Navigation() {
       header.style.transition = "none";
       header.style.transform = `translateY(-${scrollY}px)`;
       header.style.opacity = "1";
+      header.style.backgroundColor = "transparent";
       header.style.pointerEvents = "auto";
     } else if (atAbout) {
-      header.style.transition = "opacity 500ms ease-out, transform 500ms ease-out";
+      header.style.transition = "opacity 500ms ease-out, transform 500ms ease-out, background-color 500ms ease-out";
       header.style.transform = "translateY(0)";
       header.style.opacity = "1";
+      header.style.backgroundColor = "";
       header.style.pointerEvents = "auto";
     } else {
-      header.style.transition = "opacity 500ms ease-out, transform 500ms ease-out";
+      header.style.transition = "opacity 500ms ease-out, transform 500ms ease-out, background-color 500ms ease-out";
       header.style.transform = "translateY(-100%)";
       header.style.opacity = "0";
+      header.style.backgroundColor = "";
       header.style.pointerEvents = "none";
     }
   };
