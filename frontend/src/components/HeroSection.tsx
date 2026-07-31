@@ -165,7 +165,6 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         start: "top bottom",
         end: "bottom top",
         onToggle: (self) => {
-          console.log('[bonsai] hero toggle', self.isActive);
           heroActiveRef.current = self.isActive;
           updateBonsaiVisibility();
         },
@@ -183,7 +182,6 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   useEffect(() => {
     const createLookTrigger = () => {
       const lookEl = document.querySelector<HTMLElement>("#look");
-      console.log('[bonsai] lookEl', lookEl, 'ScrollTrigger?', typeof ScrollTrigger);
       if (!lookEl) {
         requestAnimationFrame(createLookTrigger);
         return;
@@ -192,15 +190,13 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
       const st = ScrollTrigger.create({
         trigger: lookEl,
         start: "top 20%",
-        end: "+=90vh",
+        end: () => `+=${window.innerHeight * 0.9}`,
         onToggle: (self) => {
-          console.log('[bonsai] look toggle', self.isActive);
           lookActiveRef.current = self.isActive;
           updateBonsaiVisibility();
         },
       });
 
-      console.log('[bonsai] look trigger created', st.start, st.end, st.isActive);
       ScrollTrigger.refresh();
 
       return () => st.kill();
