@@ -8,6 +8,7 @@ import Works from "@/components/Works";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import LoadingController from "@/components/loading/LoadingController";
+import ScrollSpacer from "@/components/ScrollSpacer";
 import { useBonsaiLoad } from "@/hooks/useBonsaiLoad";
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
       <main className="relative">
         <Navigation />
         <Hero onBonsaiLoaded={() => setBonsaiLoaded(true)} />
+        <ScrollSpacer />
         <About />
         <Works />
         <Contact />
