@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Typewriter from "./Typewriter";
 
 const links = [
   { label: "HOME", href: "#home" },
@@ -22,8 +23,8 @@ export default function Navigation() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-20 md:h-24 px-6 md:px-12 bg-background">
       <div className="grid grid-cols-3 items-center h-full gap-4">
-        <Link href="#home" className="font-display text-2xl md:text-3xl font-bold leading-none tracking-tighter text-foreground">
-          SEKAI<br />DEV
+        <Link href="#home" className="font-display text-2xl md:text-3xl font-bold leading-none tracking-tighter text-foreground whitespace-nowrap">
+          SEKAI<br />DEV <Typewriter />
         </Link>
 
         <nav className="hidden md:flex justify-center gap-8 lg:gap-12 text-[10px] lg:text-xs tracking-widest font-medium">
