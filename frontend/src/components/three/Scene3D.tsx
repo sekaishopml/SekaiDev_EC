@@ -150,8 +150,16 @@ export function BonsaiCanvas() {
         alpha: true,
         powerPreference: "high-performance",
       }}
-      className="fixed inset-0 z-[5] pointer-events-none"
-      style={{ background: "transparent" }}
+      className="pointer-events-none"
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 5,
+        pointerEvents: "none",
+        background: "transparent",
+      }}
     >
       <View.Port />
     </Canvas>
