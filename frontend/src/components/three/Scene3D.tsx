@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useRef, useEffect, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 import { ASSETS } from "@/lib/constants";
@@ -15,19 +15,39 @@ interface BonsaiProps {
   position?: [number, number, number];
 }
 
-function Bonsai({ onLoaded, scale = BONSAI_CONFIG.bonsai.scale, position = BONSAI_CONFIG.bonsai.position }: BonsaiProps) {
+function Bonsai({
+  onLoaded,
+  scale: baseScale = BONSAI_CONFIG.bonsai.scale,
+  position = BONSAI_CONFIG.bonsai.position,
+}: BonsaiProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(ASSETS.model, ASSETS.dracoPath);
   const clonedScene = useMemo(() => scene.clone(), [scene]);
+  const { size } = useThree();
 
   useEffect(() => {
     onLoaded?.();
   }, [onLoaded]);
 
   useFrame((_, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * BONSAI_CONFIG.animation.rotationSpeed;
-    }
+    if (!groupRef.current) return;
+
+    const viewportWidth =
+      typeof window !== "undefined"
+        ? document.documentElement.clientWidth
+        : size.width || 1;
+
+    // Scale the model proportionally to the canvas container width,
+    // so it keeps its relative size when the parent shrinks (e.g. hero -> rectangle).
+    const factor = Math.min(size.width / viewportWidth, 1);
+    const targetScale = baseScale * factor;
+
+    groupRef.current.scale.lerp(
+      new THREE.Vector3(targetScale, targetScale, targetScale),
+      0.3
+    );
+    groupRef.current.rotation.y +=
+      delta * BONSAI_CONFIG.animation.rotationSpeed;
   });
 
   return (
@@ -36,7 +56,7 @@ function Bonsai({ onLoaded, scale = BONSAI_CONFIG.bonsai.scale, position = BONSA
         <primitive
           object={clonedScene}
           rotation={BONSAI_CONFIG.bonsai.rotation}
-          scale={scale}
+          scale={1}
         />
       </Center>
     </group>
@@ -61,7 +81,11 @@ export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
   const baseScale = scaleProp ?? BONSAI_CONFIG.bonsai.scale;
 
   const { scale, cameraConfig } = useMemo(() => {
-    const scale = isMobile ? baseScale * 0.6 : isTablet ? baseScale * 0.8 : baseScale;
+    const scale = isMobile
+      ? baseScale * 0.6
+      : isTablet
+      ? baseScale * 0.8
+      : baseScale;
     const cameraY = isMobile ? 6.5 : BONSAI_CONFIG.camera.position[1];
     return {
       scale,
@@ -84,16 +108,28 @@ export default function Scene3D({ onLoaded, scale: scaleProp }: Scene3DProps) {
           far: cameraConfig.far,
         }}
         dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
         style={{ background: "transparent" }}
       >
         <CameraController cameraConfig={cameraConfig} />
         <ambientLight intensity={lights.ambient.intensity} />
         {lights.directional.map((light, index) => (
-          <directionalLight key={index} position={light.position} intensity={light.intensity} />
+          <directionalLight
+            key={index}
+            position={light.position}
+            intensity={light.intensity}
+          />
         ))}
         {lights.point.map((light, index) => (
-          <pointLight key={index} position={light.position} intensity={light.intensity} />
+          <pointLight
+            key={index}
+            position={light.position}
+            intensity={light.intensity}
+          />
         ))}
         <Suspense fallback={null}>
           <Bonsai onLoaded={onLoaded} scale={scale} />

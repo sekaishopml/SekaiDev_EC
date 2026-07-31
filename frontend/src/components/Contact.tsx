@@ -6,7 +6,7 @@ interface ContactProps {
 
 export default function Contact({ footer }: ContactProps) {
   return (
-    <section id="contact" className="relative h-full w-full px-6 md:px-12 pt-28 md:pt-32 pb-20 flex flex-col justify-between bg-background">
+    <section id="contact" className="relative min-h-screen w-full px-6 md:px-12 pt-28 md:pt-32 pb-20 flex flex-col justify-between bg-background">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
         <div>
           <span className="text-muted text-xs tracking-widest">03 — CONTACT</span>

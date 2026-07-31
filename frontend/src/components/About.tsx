@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <section id="about" className="h-full w-full px-6 md:px-12 pt-28 md:pt-32 pb-12 flex flex-col justify-center bg-background">
+    <section id="about" className="min-h-screen w-full px-6 md:px-12 pt-28 md:pt-32 pb-12 flex flex-col justify-center bg-background">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
         <div>
           <span className="text-muted text-xs tracking-widest">01 — ABOUT</span>

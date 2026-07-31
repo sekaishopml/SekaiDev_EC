@@ -7,7 +7,7 @@ const projects = [
 
 export default function Works() {
   return (
-    <section id="works" className="h-full w-full px-6 md:px-12 pt-28 md:pt-32 pb-12 flex flex-col justify-center bg-background">
+    <section id="works" className="min-h-screen w-full px-6 md:px-12 pt-28 md:pt-32 pb-12 flex flex-col justify-center bg-background">
       <div className="mb-6 md:mb-8">
         <span className="text-muted text-xs tracking-widest">02 — SELECTED WORKS</span>
         <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold mt-4">PROJECTS</h2>
