@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useLayoutEffect, useRef } from "react";
+import { useState, useLayoutEffect } from "react";
 import Link from "next/link";
 import Typewriter from "./Typewriter";
 
@@ -19,7 +19,6 @@ const socials = [
 export default function Navigation() {
   const [phase, setPhase] = useState<"hero" | "between" | "about">("hero");
   const [menuOpen, setMenuOpen] = useState(false);
-  const lastScrollY = useRef(0);
 
   useLayoutEffect(() => {
     const check = () => {
@@ -30,22 +29,17 @@ export default function Navigation() {
 
       const headerHeight = header.getBoundingClientRect().height;
       const scrollY = window.scrollY;
+      const heroBottom = hero.offsetTop + hero.offsetHeight;
       const aboutTop = about.offsetTop;
-      const scrollingUp = scrollY < lastScrollY.current;
-      lastScrollY.current = scrollY;
 
-      const atHeroTop = scrollY < headerHeight;
+      const inHero = scrollY < heroBottom - headerHeight * 2;
       const atAbout = aboutTop - scrollY <= headerHeight;
 
-      if (atHeroTop) {
+      if (inHero) {
         setPhase("hero");
       } else if (atAbout) {
         setPhase("about");
-      } else if (scrollingUp) {
-        // Hide fixed navbar while scrolling back up to the hero
-        setPhase("between");
       } else {
-        // Keep hidden while scrolling down until About is reached
         setPhase("between");
       }
     };
