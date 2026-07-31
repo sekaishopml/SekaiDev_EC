@@ -59,7 +59,7 @@ export default function Typewriter() {
   }, [text, phase, wordIndex, mounted]);
 
   return (
-    <span className="font-mono text-[10px] md:text-xs tracking-wider text-foreground/80 ml-1">
+    <span className="ml-1">
       {text}
       <span className="blink-cursor">_</span>
     </span>
