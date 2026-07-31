@@ -56,12 +56,23 @@ export function Bonsai({
     };
     const ratioW = metrics.ratioW ?? metrics.width / viewportWidth;
     const ratioH = metrics.ratioH ?? metrics.height / viewportHeight;
-    const factor = Math.min(Math.max(ratioW, ratioH) * 1.05, 1);
+    const coverFactor = Math.max(ratioW, ratioH) * 1.35;
 
-    const targetScale = baseScale * factor;
+    const targetScale = baseScale * coverFactor;
 
     targetScaleVec.set(targetScale, targetScale, targetScale);
     groupRef.current.scale.lerp(targetScaleVec, 0.3);
+
+    // Shift the model up as it shrinks into the top rectangle so it stays
+    // anchored near the top of the frame instead of floating in the center.
+    const baseZ = position[2];
+    const targetZ = baseZ - (1 - Math.min(coverFactor, 1)) * 0.55;
+    groupRef.current.position.z = THREE.MathUtils.lerp(
+      groupRef.current.position.z,
+      targetZ,
+      0.3
+    );
+
     groupRef.current.rotation.y +=
       delta * BONSAI_CONFIG.animation.rotationSpeed;
   });
