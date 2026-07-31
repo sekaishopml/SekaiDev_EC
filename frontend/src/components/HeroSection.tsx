@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect, useEffect, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { View } from "@react-three/drei";
@@ -25,6 +25,12 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
   const labelsRef = useRef<HTMLDivElement>(null);
   const arcRef = useRef<HTMLDivElement>(null);
   const [bonsaiVisible, setBonsaiVisible] = useState(true);
+  const heroActiveRef = useRef(true);
+  const lookActiveRef = useRef(false);
+  const updateBonsaiVisibility = useCallback(
+    () => setBonsaiVisible(heroActiveRef.current || lookActiveRef.current),
+    []
+  );
   const trackMetricsRef = useRef<TrackMetrics>({
     width: typeof window !== "undefined" ? window.innerWidth : 1,
     height: typeof window !== "undefined" ? window.innerHeight : 1,
@@ -64,10 +70,6 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
     const leftTarget = isMobile
       ? { top: "14vh", left: "5%", width: "80vw", height: "30vh" }
       : { top: "10vh", left: "5%", width: "46vw", height: "42vh" };
-
-    let heroActive = true;
-    let lookActive = false;
-    const updateBonsaiVisibility = () => setBonsaiVisible(heroActive || lookActive);
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -163,17 +165,7 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
         start: "top bottom",
         end: "bottom top",
         onToggle: (self) => {
-          heroActive = self.isActive;
-          updateBonsaiVisibility();
-        },
-      });
-
-      ScrollTrigger.create({
-        trigger: "#look",
-        start: "top 20%",
-        end: "+=90vh",
-        onToggle: (self) => {
-          lookActive = self.isActive;
+          heroActiveRef.current = self.isActive;
           updateBonsaiVisibility();
         },
       });
@@ -183,7 +175,26 @@ export default function HeroSection({ onBonsaiLoaded }: HeroSectionProps) {
     updateMetrics();
 
     return () => ctx.revert();
-  }, []);
+  }, [updateBonsaiVisibility]);
+
+  // Create the Look-section visibility trigger after the Look section has
+  // mounted in the DOM (it's a sibling rendered after HeroSection).
+  useEffect(() => {
+    const lookEl = document.querySelector<HTMLElement>("#look");
+    if (!lookEl) return;
+
+    const st = ScrollTrigger.create({
+      trigger: lookEl,
+      start: "top 20%",
+      end: "+=90vh",
+      onToggle: (self) => {
+        lookActiveRef.current = self.isActive;
+        updateBonsaiVisibility();
+      },
+    });
+
+    return () => st.kill();
+  }, [updateBonsaiVisibility]);
 
   return (
     <>
