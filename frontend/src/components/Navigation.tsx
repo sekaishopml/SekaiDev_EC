@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect, useEffect } from "react";
 import Link from "next/link";
 import Typewriter from "./Typewriter";
 
@@ -17,16 +17,25 @@ const socials = [
 ];
 
 export default function Navigation() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const check = () => {
+      const hero = document.getElementById("home");
       const about = document.getElementById("about");
       const header = document.querySelector("header");
-      if (!about || !header) return;
+      if (!hero || !about || !header) return;
+
       const headerHeight = header.getBoundingClientRect().height;
-      setVisible(about.getBoundingClientRect().top <= headerHeight);
+      const scrollY = window.scrollY;
+      const heroBottom = hero.offsetTop + hero.offsetHeight;
+      const aboutTop = about.offsetTop;
+
+      const inHero = scrollY < heroBottom - headerHeight * 2;
+      const atAbout = aboutTop - scrollY <= headerHeight;
+
+      setVisible(inHero || atAbout);
     };
 
     check();
